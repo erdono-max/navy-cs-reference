@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Navy CS Reference</title>
+<style>
+:root{
+  --bg:#0b1827;--bg2:#0e2040;--bg3:#0a1e3a;
+  --border:#1a3356;--border2:#1e4a7a;
+  --navy:#00386B;--gold:#C59A00;--gold2:#FFE066;
+  --text:#e8e0d0;--text2:#b0c4d8;--text3:#5a8ab8;
+  --green:#4CAF50;--red:#c0392b;--amber:#F57F17;--teal:#00897B;
+}
+.dark{
+  --bg:#050505;--bg2:#0a0a0a;--bg3:#111;
+  --border:#1a1a1a;--border2:#2a2a2a;
+  --text:#ddd;--text2:#999;--text3:#555;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{min-height:100vh;background:var(--bg);font-family:Georgia,'Times New Roman',serif;color:var(--text);transition:background .2s;}
+
+/* HEADER */
+.hdr{background:linear-gradient(90deg,#00386B,#004f99 55%,#C59A00 100%);
+  padding:8px 14px;border-bottom:3px solid var(--gold);
+  display:flex;align-items:center;justify-content:space-between;}
+.hdr-l{display:flex;align-items:center;gap:10px;}
+.anchor{background:var(--gold);border-radius:50%;width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.hdr-title{font-size:15px;font-weight:bold;color:#fff;line-height:1.1;}
+.hdr-sub{font-size:8px;color:#ffe08a;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.night-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+  border-radius:20px;padding:5px 11px;color:#fff;cursor:pointer;font-size:13px;font-family:inherit;}
+
+/* NAV */
+.nav{display:flex;background:var(--bg2);border-bottom:2px solid var(--border);overflow-x:auto;}
+.nav-btn{padding:10px 18px;font-size:12px;cursor:pointer;white-space:nowrap;
+  border:none;border-bottom:3px solid transparent;color:var(--text3);
+  background:none;font-family:inherit;letter-spacing:.3px;transition:all .15s;}
+.nav-btn.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:bold;}
+
+/* CONTROLS */
+.ctrl{padding:10px 14px 8px;background:var(--bg2);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;}
+.srch-wrap{position:relative;}
+.srch-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text3);}
+input[type=text]{width:100%;padding:9px 10px 9px 32px;background:var(--bg);
+  border:1.5px solid var(--border2);border-radius:8px;color:var(--text);
+  font-size:14px;font-family:inherit;outline:none;transition:border-color .15s;}
+input[type=text]:focus{border-color:var(--gold);}
+
+/* CHIPS */
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px;}
+.chip{padding:3px 9px;border-radius:12px;border:1px solid var(--border2);
+  background:transparent;color:var(--text3);font-size:10px;cursor:pointer;
+  font-family:inherit;transition:all .12s;white-space:nowrap;}
+.chip:hover{border-color:var(--gold);color:var(--gold);}
+.chip.active{background:var(--gold);border-color:var(--gold);color:#0a1628;font-weight:bold;}
+.rcount{margin-top:5px;font-size:10px;color:var(--text3);}
+
+/* CARDS */
+.results{padding:10px 13px 56px;max-width:960px;margin:0 auto;}
+.empty{text-align:center;padding:40px 0;color:var(--text3);font-size:14px;}
+.card{background:linear-gradient(135deg,var(--bg3),var(--bg2));
+  border:1.5px solid var(--border);border-radius:10px;
+  padding:11px 13px;cursor:pointer;transition:all .15s;margin-bottom:7px;}
+.card:hover{border-color:#2a5a8a;}
+.card.open{border-color:var(--gold);box-shadow:0 3px 14px rgba(197,154,0,.12);}
+.card.safety{border-left:4px solid var(--red);}
+.card-inner{display:flex;align-items:flex-start;gap:9px;}
+.cat-badge{border-radius:4px;padding:2px 6px;font-size:9px;font-weight:bold;
+  white-space:nowrap;font-family:'Courier New',monospace;flex-shrink:0;margin-top:1px;}
+.card-body{flex:1;min-width:0;}
+.card-title{font-size:13px;font-weight:bold;color:var(--text2);margin-bottom:2px;line-height:1.3;}
+.card.open .card-title{color:var(--gold2);}
+.safety-tag{display:inline-block;background:var(--red);color:#fff;font-size:9px;
+  font-weight:bold;padding:1px 5px;border-radius:3px;margin-bottom:4px;letter-spacing:.5px;}
+.quick-ans{font-size:11px;color:#80c8a0;font-style:italic;margin-bottom:3px;line-height:1.4;}
+.card-preview{font-size:10px;color:var(--text3);line-height:1.4;}
+.card-arrow{color:var(--text3);font-size:12px;flex-shrink:0;margin-top:2px;}
+.card.open .card-arrow{color:var(--gold);}
+
+/* EXPANDED */
+.card-detail{font-size:12.5px;color:var(--text2);line-height:1.65;
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--border);}
+.card-detail h4{font-size:10px;text-transform:uppercase;letter-spacing:1px;
+  color:var(--text3);margin:10px 0 4px;font-weight:bold;}
+.card-detail h4:first-child{margin-top:0;}
+.card-detail ul{margin:0;padding-left:16px;}
+.card-detail li{margin-bottom:3px;line-height:1.5;}
+.src-box{margin-top:10px;padding:6px 10px;background:rgba(0,137,123,.1);
+  border-left:3px solid var(--teal);border-radius:0 6px 6px 0;
+  font-size:11px;color:var(--teal);font-style:italic;}
+.tags{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px;}
+.tag{background:var(--bg);border:1px solid var(--border2);border-radius:4px;
+  padding:2px 6px;font-size:10px;color:var(--text3);cursor:pointer;transition:all .1s;}
+.tag:hover{border-color:var(--gold);color:var(--gold);}
+mark{background:var(--gold2);color:#1a1a2e;border-radius:2px;padding:0 2px;}
+
+/* BADGE COLORS */
+.b-pub{background:#003a30;border:1px solid #00897B;color:#80d0c8;}
+.b-role{background:#002040;border:1px solid #2980b9;color:#80c0f0;}
+.b-fs{background:#3a0808;border:1px solid #c0392b;color:#f0a0a0;}
+.b-hc{background:#3a1a00;border:1px solid #e67e22;color:#f0c080;}
+.b-frm{background:#1a003a;border:1px solid #8e44ad;color:#d0a0f0;}
+.b-gm{background:#003060;border:1px solid #2a6aab;color:#a0c8e8;}
+.b-prod{background:#3a2000;border:1px solid #F57F17;color:#ffe080;}
+.b-str{background:#1a2a00;border:1px solid #7cb342;color:#c0e080;}
+.b-san{background:#1a003a;border:1px solid #7b1fa2;color:#d0a0f0;}
+.b-eqp{background:#00203a;border:1px solid #0288d1;color:#80c8f0;}
+.b-ins{background:#3a1000;border:1px solid #bf360c;color:#f0b080;}
+.b-adm{background:#0a003a;border:1px solid #4527a0;color:#c0b0f0;}
+.b-wrd{background:#3a1500;border:1px solid #BF360C;color:#f0a080;}
+.b-uw{background:#003a35;border:1px solid #00897B;color:#80d0c8;}
+.b-cul{background:#3a0060;border:1px solid #9C27B0;color:#d0a0f0;}
+.b-trb{background:#003a30;border:1px solid #16a085;color:#80e0d0;}
+.b-ldr{background:#002040;border:1px solid #1565c0;color:#80b0e8;}
+
+/* CHECKLISTS */
+.cl-wrap{max-width:800px;margin:0 auto;padding:12px 13px 56px;}
+.cl-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.cl-hdr{padding:11px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.cl-title{font-size:13px;font-weight:bold;color:var(--text2);}
+.cl-meta{font-size:10px;color:var(--text3);margin-top:2px;}
+.cl-body{padding:0 14px 12px;display:none;}
+.cl-body.open{display:block;}
+.ci-row{display:flex;align-items:flex-start;gap:9px;padding:6px 0;
+  border-bottom:1px solid var(--border);cursor:pointer;}
+.ci-row:last-child{border-bottom:none;}
+.chkbox{width:20px;height:20px;border:2px solid var(--border2);border-radius:4px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;}
+.chkbox.done{background:var(--green);border-color:var(--green);}
+.chkbox.done::after{content:'✓';color:#fff;font-size:11px;font-weight:bold;}
+.ci-txt{flex:1;font-size:12px;color:var(--text2);line-height:1.4;}
+.ci-txt.done{text-decoration:line-through;color:var(--text3);}
+.crit-tag{font-size:9px;color:#f09070;font-weight:bold;margin-left:4px;}
+.cl-actions{margin-top:8px;display:flex;gap:6px;}
+.cl-btn{padding:4px 10px;border-radius:5px;border:1px solid var(--border2);
+  background:transparent;color:var(--text3);font-size:10px;cursor:pointer;font-family:inherit;}
+.cl-btn:hover{border-color:var(--gold);color:var(--gold);}
+
+/* QUIZ */
+.quiz-wrap{max-width:680px;margin:0 auto;padding:14px 13px 56px;}
+.quiz-title{font-size:20px;font-weight:bold;color:var(--gold);text-align:center;margin-bottom:4px;}
+.quiz-sub{font-size:12px;color:var(--text3);text-align:center;margin-bottom:16px;}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.mode-btn{padding:12px 8px;border-radius:8px;border:1.5px solid var(--border2);
+  background:var(--bg2);color:var(--text2);cursor:pointer;font-family:inherit;
+  font-size:12px;text-align:center;transition:all .15s;line-height:1.4;}
+.mode-btn:hover{border-color:var(--gold);color:var(--gold);}
+.mode-icon{font-size:18px;display:block;margin-bottom:3px;}
+.missed-info{text-align:center;font-size:11px;color:var(--text3);margin-top:6px;}
+.qcard{background:var(--bg2);border:2px solid var(--border);border-radius:12px;padding:16px;}
+.qprog{font-size:11px;color:var(--text3);margin-bottom:6px;}
+.qbar{height:4px;background:var(--border);border-radius:2px;margin-bottom:12px;}
+.qfill{height:4px;background:var(--gold);border-radius:2px;transition:width .3s;}
+.qmeta{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.qbadge{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:bold;}
+.diff-easy{background:#1a3a1a;color:#80c880;border:1px solid #4CAF50;}
+.diff-medium{background:#3a2a00;color:#d4b040;border:1px solid #C59A00;}
+.diff-hard{background:#3a0a0a;color:#f0a0a0;border:1px solid #c0392b;}
+.qlvl{background:#1a2a3a;color:#80b8f0;border:1px solid #2196F3;}
+.qcat-badge{background:#1a003a;color:#d0a0f0;border:1px solid #9C27B0;}
+.qq{font-size:15px;font-weight:bold;color:var(--text);line-height:1.5;margin-bottom:14px;}
+.qopts{display:flex;flex-direction:column;gap:9px;}
+.qopt{padding:13px 14px;border-radius:8px;border:1.5px solid var(--border2);
+  background:var(--bg);color:var(--text2);cursor:pointer;font-size:13px;
+  font-family:inherit;text-align:left;transition:all .15s;line-height:1.4;}
+.qopt:hover:not(:disabled){border-color:var(--gold);color:var(--text);}
+.qopt.correct{border-color:var(--green);background:#0d2a0d;color:#90e890;}
+.qopt.wrong{border-color:var(--red);background:#2a0d0d;color:#f08080;}
+.qexpl{margin-top:12px;padding:12px;border-radius:8px;
+  background:rgba(0,56,107,.3);border:1px solid var(--navy);
+  font-size:12.5px;color:var(--text2);line-height:1.5;}
+.qexpl-hd{font-weight:bold;color:var(--gold);margin-bottom:5px;font-size:11px;
+  text-transform:uppercase;letter-spacing:1px;}
+.qsrc{font-size:10px;color:var(--teal);margin-top:6px;font-style:italic;}
+.qnext{width:100%;margin-top:10px;padding:12px;border-radius:8px;border:none;
+  background:var(--navy);color:#fff;font-size:14px;font-weight:bold;cursor:pointer;font-family:inherit;}
+.score-wrap{text-align:center;padding:24px 16px;}
+.score-num{font-size:52px;font-weight:bold;color:var(--gold);}
+.score-lbl{font-size:13px;color:var(--text2);margin-top:4px;}
+.score-msg{font-size:15px;color:var(--text);margin-top:14px;font-style:italic;}
+.cat-bd{margin-top:14px;background:var(--bg2);border-radius:10px;padding:14px;text-align:left;}
+.cat-bd-title{font-size:11px;color:var(--gold);font-weight:bold;margin-bottom:8px;
+  text-transform:uppercase;letter-spacing:1px;}
+.cat-row{display:flex;justify-content:space-between;padding:4px 0;
+  border-bottom:1px solid var(--border);font-size:12px;}
+.cat-row:last-child{border-bottom:none;}
+.pct-g{color:var(--green);font-weight:bold;}
+.pct-o{color:var(--amber);font-weight:bold;}
+.pct-b{color:var(--red);font-weight:bold;}
+.score-btns{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.sbtn{flex:1;padding:11px;border-radius:8px;border:1.5px solid var(--border2);
+  background:transparent;color:var(--text2);font-size:13px;font-weight:bold;
+  cursor:pointer;font-family:inherit;min-width:100px;}
+.sbtn.primary{background:var(--gold);border-color:var(--gold);color:#0a1628;}
+
+@media(max-width:600px){
+  .hdr{padding:6px 10px;}
+  .ctrl{padding:8px 10px 6px;}
+  .results{padding:8px 10px 48px;}
+  .quiz-wrap,.cl-wrap{padding:10px 10px 48px;}
+  .mode-grid{grid-template-columns:1fr 1fr;}
+  .qopt{padding:14px 12px;font-size:14px;}
+  .qq{font-size:14px;}
+}
+
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="anchor">⚓</div>
+    <div>
+      <div class="hdr-title">Navy CS Reference</div>
+      <div class="hdr-sub">P-486 · E1–E8 · Operational · Advancement</div>
+    </div>
+  </div>
+  <button class="night-btn" id="nightBtn" onclick="toggleNight()">🌙</button>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('ref',this)">📋 Reference</button>
+  <button class="nav-btn" onclick="showTab('cl',this)">✅ Checklists</button>
+  <button class="nav-btn" onclick="showTab('quiz',this)">⭐ Quiz</button>
+</div>
+
+<!-- REFERENCE -->
+<div id="tab-ref">
+  <div class="ctrl" id="refCtrl">
+    <div class="srch-wrap">
+      <span class="srch-icon">🔍</span>
+      <input type="text" id="si" placeholder="Search — cooling, 1090, COMRATS, fryer, INSURV..." oninput="doSearch()"/>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="rcount" id="rcount"></div>
+  </div>
+  <div class="results" id="results"></div>
+</div>
+
+<!-- CHECKLISTS -->
+<div id="tab-cl" style="display:none">
+  <div class="cl-wrap" id="clWrap"></div>
+</div>
+
+<!-- QUIZ -->
+<div id="tab-quiz" style="display:none">
+  <div class="quiz-wrap" id="quizWrap"></div>
+</div>
+
+<script>
+// data-reference.js
+// cat codes: pub role fs hc frm gm prod str san eqp ins adm wrd uw cul trb ldr
+
+const CATS = [
+  {id:'pub',  label:'Publications',          badge:'b-pub'},
+  {id:'role', label:'Roles & Responsibilities', badge:'b-role'},
+  {id:'fs',   label:'Food Safety / HACCP',   badge:'b-fs'},
+  {id:'hc',   label:'Headcount & Entitlements', badge:'b-hc'},
+  {id:'frm',  label:'Forms & Records',       badge:'b-frm'},
+  {id:'gm',   label:'General Mess Ops',      badge:'b-gm'},
+  {id:'prod', label:'Production & Service',  badge:'b-prod'},
+  {id:'str',  label:'Storeroom & Receiving', badge:'b-str'},
+  {id:'san',  label:'Cleaning & Sanitation', badge:'b-san'},
+  {id:'eqp',  label:'Equipment',             badge:'b-eqp'},
+  {id:'ins',  label:'Inspection Prep',       badge:'b-ins'},
+  {id:'adm',  label:'Admin & Financials',    badge:'b-adm'},
+  {id:'wrd',  label:'Wardroom / CPO Mess',   badge:'b-wrd'},
+  {id:'uw',   label:'Underway / Emergency',  badge:'b-uw'},
+  {id:'cul',  label:'Culinary Fundamentals', badge:'b-cul'},
+  {id:'trb',  label:'Troubleshooting',       badge:'b-trb'},
+  {id:'ldr',  label:'Leadership & Training', badge:'b-ldr'},
+];
+const CAT_MAP = {};
+CATS.forEach(c => { CAT_MAP[c.id] = c; });
+
+const REF = [
+
+// ── PUBLICATIONS ─────────────────────────────────────────
+{cat:'pub', title:'NAVSUP P-486 — Food Service Management Manual',
+ quick:'The governing publication for all Navy General Mess operations. Volumes I and II cover administration, financial accountability, food safety, HACCP, and inspection.',
+ rules:['Volume I: GM administration, entitlements, financial records, ordering.',
+        'Volume II: Food service operations, HACCP, sanitation, equipment.',
+        'Inspectors cite P-486 for every food service deficiency.',
+        'All CS must know the sections relevant to their paygrade and billet.'],
+ mistakes:['Treating P-486 as optional reading — it is the operational law for CS.',
+            'Not knowing which volume covers your area of responsibility.'],
+ hits:['Any deviation from P-486 procedures can be cited during INSURV or TYCOM inspection.'],
+ src:'NAVSUP P-486',
+ tags:['P-486','publication','reference','general mess','food service']},
+
+{cat:'pub', title:'CS TRAMAN / NAVEDTRA — Culinary Training Manual',
+ quick:'Primary advancement exam reference covering culinary fundamentals, knife skills, cooking methods, baking, stocks, sauces, kitchen math, and recipe scaling.',
+ rules:['Primary study source for E4–E6 advancement exams.',
+        'Covers culinary science — the WHY behind cooking techniques.',
+        'Knife cuts, cooking temps, mother sauces, stocks, baking all tested on exam.',
+        'Know TRAMAN well enough to explain it to junior sailors.'],
+ mistakes:['Waiting until advancement season to study TRAMAN.',
+            'Memorizing answers without understanding the concepts.'],
+ hits:['Advancement exam questions are pulled directly from TRAMAN content.'],
+ src:'CS TRAMAN / NAVEDTRA',
+ tags:['TRAMAN','NAVEDTRA','advancement','culinary','exam','study']},
+
+{cat:'pub', title:'NAVSUP Pub 7 & 8 — Recipes and Bakery',
+ quick:'Pub 7 contains standardized Navy recipes. Pub 8 covers bakery operations. Both are the authorized production reference for GM menus.',
+ rules:['Use Pub 7 recipes as the production standard — do not improvise large-batch quantities.',
+        'Pub 8 governs bakery item production, scaling, and procedures.',
+        'Significant deviation from Pub 7 without FSO approval is a procedural violation.',
+        'Recipe cards establish authorized portion sizes.'],
+ mistakes:['Improvising recipe quantities for large batches without using Pub 7.',
+            'Not scaling bakery recipes correctly for the number of portions needed.'],
+ hits:['Production records that do not match Pub 7 portions can be cited during audit.'],
+ src:'NAVSUP Pub 7 · NAVSUP Pub 8',
+ tags:['Pub 7','Pub 8','recipes','production','bakery','portions']},
+
+{cat:'pub', title:'NAVMED P-5010 — Navy Medical Food Safety',
+ quick:'Medical authority on food service sanitation. Chapter 1 provides the public health and scientific basis for Navy food safety rules.',
+ rules:['NAVMED P-5010 Chapter 1 covers food service sanitation from a medical standpoint.',
+        'Used by medical officers during foodborne illness investigations.',
+        'Cross-referenced by inspectors when food safety failures occur.',
+        'Explains WHY temperature controls and sanitation rules exist.'],
+ mistakes:['Ignoring the medical basis for food safety rules — understanding the why improves compliance.'],
+ hits:['Cited alongside P-486 when food safety failures result in illness.'],
+ src:'NAVMED P-5010',
+ tags:['NAVMED P-5010','medical','food safety','sanitation','illness']},
+
+{cat:'pub', title:'FDA Food Code — National Food Safety Standard',
+ quick:'Civilian food safety reference. Navy P-486 rules are built on FDA Food Code principles — HACCP, danger zone, cooling, handwashing, allergen labeling, sick employee policy.',
+ rules:['Danger zone (41°F–135°F), cooling procedures, thawing methods — all FDA Food Code derived.',
+        'ServSafe certification (recommended CS1+) is based on FDA Food Code.',
+        'Big 9 allergen labeling requirements come from FDA.',
+        'Knowing FDA Food Code gives the scientific foundation behind P-486 rules.'],
+ mistakes:['Not understanding where food safety rules originate.',
+            'Skipping ServSafe certification — it is the civilian equivalent of P-486 food safety knowledge.'],
+ hits:['FDA Food Code principles back every HACCP CCP.'],
+ src:'FDA Food Code',
+ tags:['FDA Food Code','HACCP','danger zone','ServSafe','allergens']},
+
+{cat:'pub', title:'OPNAV 5040/1 — Food Service Inspection Checklist',
+ quick:'The official Navy food service inspection form. This is EXACTLY what inspectors use. Walk your spaces with this form regularly.',
+ rules:['Five graded areas: sanitation/hygiene, food handling/temps, financial records, equipment/maintenance, training documentation.',
+        'INSURV, TYCOM, and chain of command all use 5040/1.',
+        'Self-inspect using 5040/1 at minimum monthly.',
+        'Inspectors do not use a different checklist — this is THE checklist.'],
+ mistakes:['Never reading 5040/1 before an inspection.',
+            'Preparing for inspection by guessing what inspectors look for.'],
+ hits:['Every item on 5040/1 is a potential inspection finding.'],
+ src:'OPNAV 5040/1',
+ tags:['OPNAV 5040/1','inspection','INSURV','TYCOM','graded','self-inspect']},
+
+// ── ROLES & RESPONSIBILITIES ──────────────────────────────
+{cat:'role', title:'Watch Captain — Responsibilities',
+ quick:'The watch captain runs the meal period. They are responsible for safety, sanitation, station assignments, logs, line flow, and turnover.',
+ rules:['Assign stations before meal prep begins.',
+        'Verify cooking, holding, cooling, and sanitizer logs before and during service.',
+        'Check serving line setup before opening — hot foods ≥135°F, cold foods ≤41°F.',
+        'Monitor line flow and manage replenishment throughout service.',
+        'Identify and report food safety or equipment issues immediately.',
+        'Complete all logs and brief the oncoming watch before turnover.',
+        'Ensure all cooling items are documented with start time and temp before turnover.'],
+ mistakes:['Not verifying logs before turnover.',
+            'Letting food sit in the danger zone without taking corrective action.',
+            'Poor station assignment — wrong sailors on critical stations.',
+            'Not briefing the next watch — passing problems silently.',
+            'Leaving cooling items unlabeled or unlogged.'],
+ hits:['Incomplete HACCP logs','Unlabeled food','Improper holding temps','No turnover documentation'],
+ src:'NAVSUP P-486 · Local Command SOP',
+ tags:['watch captain','responsibilities','turnover','logs','stations','food safety']},
+
+{cat:'role', title:'Watch Captain — Pre-Service Checklist',
+ quick:'Before service opens, the watch captain verifies temps, logs, stations, sanitation, and line setup.',
+ rules:['Walk the entire galley — check cleanliness of all surfaces.',
+        'Verify walk-in temps logged and within range (fridge ≤41°F, freezer ≤0°F).',
+        'Check that all cooking temps are logged for items on the serving line.',
+        'Verify sanitizer buckets tested and at correct concentration (chlorine 50–200 ppm).',
+        'Confirm all food on line is labeled with item name, date, and time.',
+        'Verify hot holding ≥135°F and cold holding ≤41°F at the line.',
+        'Ensure all CS are in correct uniform with hair restraints.',
+        'Check COMRATS list — know who is NOT authorized to eat free.'],
+ mistakes:['Opening the line without checking temps first.',
+            'Skipping the COMRATS list check.',
+            'Not checking food labels before service.'],
+ hits:['Food not at proper temp at line open','Unlabeled food','Wrong uniform/hygiene','COMRATS fed free'],
+ src:'NAVSUP P-486',
+ tags:['watch captain','pre-service','checklist','temps','labels','COMRATS']},
+
+{cat:'role', title:'Cook on Watch — Responsibilities',
+ quick:'The cook on watch executes production, maintains cooking temps, replenishes the line, communicates with the watch captain, and keeps the production area clean.',
+ rules:['Follow Pub 7 recipe cards for all production items — do not improvise quantities.',
+        'Verify and log internal cooking temps for all protein items before sending to line.',
+        'Notify watch captain of any recipe substitutions needed.',
+        'Replenish line items before they run out — not after complaints start.',
+        'Keep production area clean and sanitized during cooking.',
+        'Use correct portion scoops and ladles for every item.',
+        'Never reheat food in the steam table — use oven, stovetop, or steam kettle.'],
+ mistakes:['Sending food to the line without checking internal temp.',
+            'Reheating food in the steam table.',
+            'Not logging cooking temps.',
+            'Improvising batch quantities without using Pub 7.',
+            'Leaving production area unsanitary.'],
+ hits:['Cooking temp not logged','Food reheated in steam table','Improper portions'],
+ src:'NAVSUP P-486 · NAVSUP Pub 7',
+ tags:['cook on watch','production','cooking temps','line replenishment','recipe','batch cooking']},
+
+{cat:'role', title:'Galley Supervisor — Walkthrough Expectations',
+ quick:'The galley supervisor walks spaces to verify food safety, sanitation, logs, and line setup. They correct deficiencies and brief the chain of command.',
+ rules:['Walk all spaces with OPNAV 5040/1 in hand at minimum weekly.',
+        'Check HACCP logs — verify all entries are present and within range.',
+        'Verify food temps on the serving line without announcing it.',
+        'Check walk-in organization, FIFO rotation, and temps.',
+        'Verify MCS is posted and signed off as tasks are completed.',
+        'Correct deficiencies on the spot — document corrective action.',
+        'Brief FSO immediately on any food safety failure or equipment casualty.'],
+ mistakes:['Only walking spaces when an inspection is scheduled.',
+            'Checking logs without verifying they match actual conditions.',
+            'Not documenting corrective actions when deficiencies are found.'],
+ hits:['Logs not matching actual conditions','Spaces only clean for inspection','No documented corrective actions'],
+ src:'NAVSUP P-486 · OPNAV 5040/1',
+ tags:['galley supervisor','walkthrough','OPNAV 5040/1','logs','corrective action','FSO']},
+
+{cat:'role', title:'Jack-of-the-Dust (JOD) — Responsibilities',
+ quick:'The JOD manages the storeroom — organization, FIFO, receiving, breakouts, issue procedures, inventory, and pest prevention.',
+ rules:['Maintain FIFO rotation — new stock always goes to the back.',
+        'Log all issues on NAVSUP 1149 — both parties sign, no exceptions.',
+        'Conduct receiving inspection before accepting any delivery.',
+        'Check storeroom temps twice daily and log them.',
+        'Inspect for pest evidence during every storeroom entry.',
+        'Conduct spot inventories regularly and full inventory at period end.',
+        'Keep storeroom locked when not actively attended.',
+        'Store food minimum 6 inches off deck and away from bulkheads.'],
+ mistakes:['Issuing items without completing NAVSUP 1149.',
+            'Not rotating FIFO on every delivery.',
+            'Leaving storeroom unlocked.',
+            'Ignoring pest evidence — always report immediately.',
+            'Storing food on the deck.'],
+ hits:['Food on deck','Missing 1149s','Storeroom unlocked','Expired items in stores','Poor FIFO'],
+ src:'NAVSUP P-486',
+ tags:['JOD','jack of the dust','storeroom','FIFO','1149','receiving','breakout','inventory','pest']},
+
+{cat:'role', title:'Records Keeper — Daily Responsibilities',
+ quick:'The records keeper maintains all food service forms, HACCP logs, headcount records, and inspection binders with complete accuracy.',
+ rules:['Complete NAVSUP 1090 every meal period — balance to the penny.',
+        'Reconcile DD 1544 coupons against cash after every meal.',
+        'Maintain HACCP logs with no blank entries.',
+        'Verify headcount tallied by correct category (SIK, COMRATS, cash, TAD, guests).',
+        'File all NAVSUP 335s and 1149s chronologically.',
+        'Retain all records minimum 3 years.',
+        'Maintain an inspection binder with current logs, forms, and certifications.'],
+ mistakes:['Leaving blank entries in HACCP logs — a blank looks like a missed check.',
+            'Not reconciling DD 1544 coupons against cash every meal.',
+            'Miscategorizing headcount on the 1090.',
+            'Discarding records before 3-year retention period ends.'],
+ hits:['Blank HACCP log entries','1090 discrepancies','DD 1544 vs cash mismatch','Missing records'],
+ src:'NAVSUP P-486',
+ tags:['records keeper','1090','HACCP logs','DD 1544','1149','retention','inspection binder']},
+
+{cat:'role', title:'Scullery / Dish Room — Procedures',
+ quick:'Scullery maintains wash-rinse-sanitize sequence, correct machine temps and chemical concentrations, and clean-to-dirty flow.',
+ rules:['3-compartment sink: Wash (hot soapy water) → Rinse (clean water) → Sanitize (50–200 ppm chlorine) → Air dry.',
+        'Mechanical dishwasher high-temp: final rinse ≥180°F at the rack.',
+        'Chemical sanitize machines: verify sanitizer concentration per manufacturer.',
+        'Air dry ONLY — never towel dry after sanitizing.',
+        'Maintain clean-to-dirty flow — never cross dirty items back into clean zone.',
+        'Change sanitizer solution every 2 hours or when visibly soiled.',
+        'Test sanitizer with strips every 4 hours.'],
+ mistakes:['Towel drying after sanitizing — reintroduces bacteria.',
+            'Not testing sanitizer concentration.',
+            'Crossing dirty items back into the clean zone.',
+            'Not checking dishwasher final rinse temp.'],
+ hits:['Wrong sanitizer concentration','No test strips','Dirty items in clean zone','Towel drying'],
+ src:'NAVSUP P-486 · FDA Food Code',
+ tags:['scullery','dish room','3 compartment','wash rinse sanitize','dishwasher','sanitizer','air dry']},
+
+{cat:'role', title:'Line Server — Responsibilities',
+ quick:'Line servers maintain portion control, food temperatures, serving line cleanliness, and replenishment throughout service.',
+ rules:['Use correct portion scoops and ladles for every item — no eyeballing.',
+        'Check hot food temps every 2 hours (must be ≥135°F).',
+        'Check cold food temps every 2 hours (must be ≤41°F).',
+        'Notify watch captain when items need replenishment — do not wait until empty.',
+        'Maintain a clean serving line throughout service.',
+        'Wear proper uniform — hair restraint, clean apron, no jewelry.',
+        'No bare-hand contact with ready-to-eat food — use gloves or utensils.'],
+ mistakes:['Eyeballing portions instead of using the correct scoop.',
+            'Not reporting low line items until they run out.',
+            'Bare-hand contact with RTE food.',
+            'Not checking food temps during service.'],
+ hits:['Bare-hand contact with RTE food','Improper portions','Food below 135°F on line','Improper uniform'],
+ src:'NAVSUP P-486',
+ tags:['line server','portion control','serving line','temps','replenishment','uniform','bare hand']},
+
+{cat:'role', title:'Bake Shop — Responsibilities',
+ quick:'Bake shop produces breads, pastries, and desserts following Pub 8, using correct scaling, proofing, and bakery sanitation procedures.',
+ rules:['Scale all recipes using Pub 8 as the authorized source.',
+        'Always proof yeast in 105°F water before mixing — if it does not foam in 10 min, replace it.',
+        'Log bake times and temperatures.',
+        'Maintain bake shop area clean and sanitized — flour dust is a pest attraction.',
+        'Check oven temps with calibrated thermometer before production.',
+        'Cool baked goods before wrapping — do not trap steam inside packaging.',
+        'Label all baked goods with item name, date, and time.'],
+ mistakes:['Not proofing yeast — wastes entire batch when it fails.',
+            'Scaling recipes by memory instead of using Pub 8.',
+            'Wrapping hot baked goods — causes steam condensation and mold.',
+            'Not labeling baked items.'],
+ hits:['Unlabeled bakery items','Yeast failures','Improper scaling'],
+ src:'NAVSUP P-486 · NAVSUP Pub 8',
+ tags:['bake shop','yeast','proofing','scaling','Pub 8','bakery','labeling']},
+
+// ── FOOD SAFETY / HACCP ──────────────────────────────────
+{cat:'fs', safety:true, title:'HACCP — 8 Critical Control Points',
+ quick:'Receiving · Storage · Preparation · Cooking · Hot Holding · Cold Holding · Cooling · Reheating. Each CCP has required temps and mandatory log entries.',
+ rules:['1. RECEIVING: Cold TCS ≤41°F, frozen solid. Reject anything out of range.',
+        '2. STORAGE: Fridge ≤41°F, freezer ≤0°F, log 2× daily. Raw meat below RTE.',
+        '3. PREPARATION: Separate raw from RTE. Approved thawing only. Handwash between tasks.',
+        '4. COOKING: Poultry 165°F | Ground meat 155°F | Pork/fish 145°F | All other TCS 135°F.',
+        '5. HOT HOLDING: ≥135°F. Check every 2 hours during service.',
+        '6. COLD HOLDING: ≤41°F. Check every 2 hours during service.',
+        '7. COOLING: 135→70°F in 2 hours, then 70→41°F in 4 more hours (6 hrs total max).',
+        '8. REHEATING: 165°F within 2 hours using cooking equipment — NEVER in steam table.'],
+ mistakes:['Reheating food in the steam table.',
+            'Placing hot food in a deep container in the walk-in to cool.',
+            'Not logging every CCP check.',
+            'Leaving blank entries in HACCP logs.'],
+ hits:['Incomplete HACCP logs','Blank log entries','Reheating in steam table','Food out of temp range'],
+ src:'NAVSUP P-486 · NAVMED P-5010 · FDA Food Code',
+ tags:['HACCP','CCP','165','155','145','135','41','cooling','reheating','hot holding','cold holding']},
+
+{cat:'fs', safety:true, title:'Temperature Danger Zone & Cooling Procedures',
+ quick:'Danger zone: 41°F to 135°F. Bacteria double every 20 min at optimal temps. Cooling: 135→70°F in 2 hrs, then 70→41°F in 4 more hrs.',
+ rules:['Danger zone: 41°F to 135°F. Minimize all TCS food time in this range.',
+        'Cooling step 1: 135°F to 70°F within 2 hours.',
+        'Cooling step 2: 70°F to 41°F within 4 more hours. Total max: 6 hours.',
+        'Approved cooling methods: shallow pans (≤2 inches), ice bath with stirring, blast chiller.',
+        'NEVER cool food in a deep container directly in the walk-in.',
+        'Log cooling start time and temperature for every batch.',
+        'Food that fails the 2-hour benchmark must be discarded — no exceptions.'],
+ mistakes:['Deep pot of soup placed directly in the walk-in to cool.',
+            'Not logging cooling start time.',
+            'Trying to save food that failed the cooling benchmark.',
+            'Assuming walk-in temperature = food temperature.'],
+ hits:['Cooling log missing','Food not reaching 70°F in 2 hours','No ice bath setup'],
+ src:'NAVSUP P-486 · FDA Food Code',
+ tags:['danger zone','cooling','135','70','41','2 hour','4 hour','ice bath','blast chiller']},
+
+{cat:'fs', safety:true, title:'Thawing — 4 Approved Methods Only',
+ quick:'Refrigerator (safest) · Cold running water ≤70°F · Microwave (cook immediately) · During cooking. NEVER at room temperature.',
+ rules:['Refrigerator thawing: safest, plan 1–3 days ahead. Food stays at 41°F throughout.',
+        'Cold running water: must be 70°F or below, continuously flowing, sealed packaging.',
+        'Microwave: must cook the item immediately after thawing.',
+        'During cooking: adding frozen directly to the cooking process.',
+        'NEVER thaw at room temperature or in standing warm water.',
+        'Outside temperature is irrelevant — danger zone rules apply inside the food.'],
+ mistakes:['Leaving frozen protein on the counter to thaw overnight.',
+            'Thawing in standing warm water.',
+            'Using a microwave to thaw and then refrigerating before cooking.'],
+ hits:['Food found thawing on counter','Improper thawing method documented during inspection'],
+ src:'NAVSUP P-486 · FDA Food Code',
+ tags:['thawing','defrost','refrigerator','running water','microwave','room temperature']},
+
+{cat:'fs', title:'Handwashing, Gloves & Sick Employee Policy',
+ quick:'Wash hands 20 seconds at handwash sink only. Gloves required for RTE foods. Exclude sick food handlers — report immediately.',
+ rules:['Handwash at designated handwash sink ONLY — not the prep sink.',
+        '20-second minimum: wet, soap, scrub all surfaces, rinse, dry with single-use towel.',
+        'Required: before handling food, after raw proteins, after restroom, after breaks.',
+        'Gloves required for all ready-to-eat (RTE) foods — no bare-hand contact.',
+        'Change gloves when switching tasks, after raw meat, when torn.',
+        'Gloves do NOT replace handwashing — wash before putting gloves on.',
+        'EXCLUDE food handlers with: vomiting, diarrhea, jaundice, fever with sore throat, infected hand wound.',
+        'Report sick food handler to FSO and medical immediately.'],
+ mistakes:['Using the prep sink to wash hands.',
+            'Skipping handwashing because gloves are being worn.',
+            'Allowing a sick sailor to work any galley station.'],
+ hits:['Bare-hand contact with RTE food','Using prep sink to wash hands','Sick employee in galley'],
+ src:'NAVSUP P-486 · NAVMED P-5010 · FDA Food Code',
+ tags:['handwashing','gloves','sick employee','RTE','20 seconds','hygiene','bare hand']},
+
+{cat:'fs', title:'Date Marking & Labeling Requirements',
+ quick:'All prepared food must be labeled: item name + preparation date + time. RTE TCS food stored at 41°F: 7-day maximum shelf life.',
+ rules:['Every prepared or opened TCS food item must be labeled before being stored.',
+        'Label must include: item name, preparation date, time.',
+        'Ready-to-eat TCS foods stored at 41°F or below: use or discard within 7 days.',
+        'If storage temp rises above 41°F, recalculate and reassess the 7-day limit.',
+        'Unlabeled food is the most commonly cited inspection finding Navy-wide.',
+        'All baked goods, portioned items, and opened containers must be labeled.'],
+ mistakes:['Putting food in the walk-in without a label.',
+            'Reusing old labels from previous batches.',
+            'Not knowing the 7-day rule applies to RTE TCS foods.'],
+ hits:['Unlabeled food — most common inspection finding','Items past 7-day shelf life'],
+ src:'NAVSUP P-486 · FDA Food Code',
+ tags:['labeling','date marking','7 day','RTE','shelf life','walk-in','inspection']},
+
+{cat:'fs', title:'The Big 9 Allergens',
+ quick:'Milk · Eggs · Fish · Shellfish · Tree Nuts · Peanuts · Wheat · Soybeans · Sesame. Any sailor with documented allergy must be accommodated.',
+ rules:['The Big 9 allergens must be identifiable in menu items served.',
+        'Sailors with documented food allergies: notify FSO, use separate equipment and surfaces.',
+        'Cross-contact (allergen transfer between foods) is as dangerous as direct consumption.',
+        'Never dismiss an allergy complaint — anaphylaxis can be life-threatening.',
+        'Separate utensils, pans, and surfaces are required when preparing allergy-safe meals.'],
+ mistakes:['Dismissing allergy requests.',
+            'Using shared equipment without cleaning between allergen and allergy-safe items.'],
+ hits:['Failure to accommodate documented food allergy — medical readiness issue'],
+ src:'NAVSUP P-486 · FDA Food Code',
+ tags:['allergens','Big 9','milk','eggs','peanuts','wheat','shellfish','sesame','allergy']},
+
+// ── HEADCOUNT & ENTITLEMENTS ──────────────────────────────
+{cat:'hc', title:'SIK, BAS, and COMRATS — Who Gets Fed',
+ quick:'SIK: ship collects BAS and feeds sailor in GM. COMRATS: sailor keeps BAS + extra and feeds themselves — do NOT feed free. BAS: all enlisted receive it.',
+ rules:['BAS (Basic Allowance for Subsistence): all enlisted receive in their pay.',
+        'SIK (Subsistence In Kind): ship collects BAS, sailor eats in GM. These sailors ARE entitled.',
+        'COMRATS (Commuted Rations): sailor receives extra BAS to mess separately. NOT entitled to eat in GM free.',
+        'Feeding a COMRATS sailor for free is the #1 audit finding Navy-wide.',
+        'COMRATS list must be posted and checked before every meal.',
+        'A COMRATS sailor who pays cash may eat in the GM — collect payment and issue DD 1544.'],
+ mistakes:['Feeding COMRATS sailors for free because they "always eat here."',
+            'Not checking the COMRATS list before every meal.',
+            'Not updating the COMRATS list when a sailor\'s status changes.'],
+ hits:['COMRATS fed free — financial violation','COMRATS list not posted or not current'],
+ src:'NAVSUP P-486 · MILPERSMAN',
+ tags:['SIK','BAS','COMRATS','entitled','subsistence','commuted rations','headcount']},
+
+{cat:'hc', title:'Cash Meals, TAD Personnel & Guests',
+ quick:'Non-entitled personnel pay current meal rate and receive DD 1544 coupon. TAD: verify orders. Guests: FSO pre-approval required.',
+ rules:['Cash patrons: collect payment at current meal rate, issue DD 1544 coupon. One coupon per meal.',
+        'Reconcile DD 1544 coupons against cash collected at end of every meal period.',
+        'TAD personnel: verify orders before feeding — not all TAD are entitled.',
+        'Guests: must be pre-approved by FSO in writing before the meal.',
+        'Officers: mess in wardroom only — not in the enlisted GM.',
+        'Never feed anyone for free who is not verified as SIK-entitled.'],
+ mistakes:['Serving TAD personnel without verifying their orders.',
+            'Feeding officers in the enlisted GM.',
+            'Serving unapproved guests.',
+            'Not reconciling DD 1544 coupons vs cash at end of each meal.'],
+ hits:['DD 1544 vs cash discrepancy','Unauthorized feeding','Unapproved guests fed'],
+ src:'NAVSUP P-486',
+ tags:['cash meal','DD 1544','TAD','guests','officers','unauthorized feeding','headcount']},
+
+{cat:'hc', title:'Headcount Reconciliation & NAVSUP 1090',
+ quick:'Every meal period headcount must be tallied by category and recorded on NAVSUP 1090. The 1090 must balance at the end of each accounting period.',
+ rules:['Record headcount by category every meal: SIK entitled, COMRATS (cash), TAD, guests, cash patrons.',
+        'NAVSUP 1090 must be completed every meal — no partial entries.',
+        'Reconcile DD 1544 coupons against cash collected after every meal.',
+        'Submit NAVSUP 1291 monthly to TYCOM with period totals.',
+        'Any headcount discrepancy must be documented with explanation.',
+        'Retain all 1090s minimum 3 years.'],
+ mistakes:['Incomplete 1090 entries — leaving meals unrecorded.',
+            'Not reconciling coupons against cash every meal.',
+            'Miscategorizing headcount — SIK in cash column, etc.'],
+ hits:['1090 discrepancies','Missing meal entries','Cash vs coupon mismatch'],
+ src:'NAVSUP P-486',
+ tags:['headcount','reconciliation','1090','1291','DD 1544','meal period','accounting']},
+
+// ── FORMS & RECORDS ───────────────────────────────────────
+{cat:'frm', title:'NAVSUP 1090 — Food Service Record (Daily)',
+ quick:'Primary daily accountability document. Completed every meal. Records meals by category, subsistence costs, and cash. Retained 3 years.',
+ rules:['Complete for every meal period — breakfast, lunch, dinner, and mid-rats if served.',
+        'Record headcount by exact category: SIK, cash (COMRATS, TAD, guests), etc.',
+        'Record subsistence value used and cash collected.',
+        'Must balance at the end of the accounting period.',
+        'Retained minimum 3 years — do not destroy without authorization.',
+        'Basis for NAVSUP 1291 monthly report to TYCOM.'],
+ mistakes:['Skipping a meal period entry.',
+            'Estimating headcount instead of counting exactly.',
+            'Throwing away old 1090s before 3-year retention ends.'],
+ hits:['Missing meal entries','Headcount discrepancies','Records not retained'],
+ src:'NAVSUP P-486',
+ tags:['1090','food service record','daily','accountability','headcount','retention']},
+
+{cat:'frm', title:'NAVSUP 335 — Subsistence Invoice (Receiving)',
+ quick:'Documents receipt of a delivery. Sign ONLY for items you inspected and accepted. Your signature is legal accountability.',
+ rules:['Sign 335 only after physically inspecting the delivery.',
+        'Verify quantities match invoice before signing.',
+        'Check temperatures of TCS items before signing.',
+        'Reject and document any item that fails inspection — do not sign for it.',
+        'Retain all signed 335s minimum 3 years.',
+        'A signed 335 for items not received is financial liability.'],
+ mistakes:['Signing the 335 without inspecting the delivery.',
+            'Accepting and signing for out-of-temp TCS items.',
+            'Signing for quantities not verified by physical count.'],
+ hits:['Signed 335 for items not received','No receiving inspection documented'],
+ src:'NAVSUP P-486',
+ tags:['335','subsistence invoice','receiving','delivery','signature','inspection']},
+
+{cat:'frm', title:'NAVSUP 1149 — Receipt/Issue of Provisions',
+ quick:'Required for every storeroom transfer. Both parties sign. No exceptions. Missing 1149s create inventory gaps that look like theft.',
+ rules:['Complete a 1149 for every transfer of food from storeroom to galley.',
+        'Both the issuer (JOD) and receiver sign the 1149.',
+        'Record item, quantity, unit of issue, and date.',
+        'Retain all 1149s minimum 3 years.',
+        'A missing 1149 = an inventory discrepancy = potential audit finding.',
+        'Do not issue from storeroom without a completed 1149.'],
+ mistakes:['Pulling items from the storeroom without completing a 1149.',
+            'Only one party signing — both are required.',
+            'Incomplete 1149s with missing quantities or items.'],
+ hits:['Missing 1149s','Incomplete issue records','Inventory discrepancies without documentation'],
+ src:'NAVSUP P-486',
+ tags:['1149','receipt issue','storeroom','provisions','breakout','JOD','accountability']},
+
+{cat:'frm', title:'NAVSUP 367 — Requisition for Stores',
+ quick:'Used to order subsistence from DSCP or supply. Include correct NSN, quantity, and unit of issue. Plan ahead — DSCP lead times are long.',
+ rules:['Use correct NSN for every item — wrong NSN = wrong item delivered.',
+        'Include quantity, unit of issue, and justification.',
+        'Plan 2–3 weeks ahead for underway requirements.',
+        'Local purchase requires FSO and CO approval — last resort only.',
+        'Retain copies of all 367s minimum 3 years.',
+        'Document substitutions when authorized items are unavailable.'],
+ mistakes:['Wrong NSN on 367 — causes wrong item delivery underway.',
+            'Not planning ahead — running out of items underway.',
+            'Local purchase without CO/FSO approval.'],
+ hits:['Missing requisition documentation','Unauthorized local purchase'],
+ src:'NAVSUP P-486',
+ tags:['367','requisition','DSCP','ordering','NSN','local purchase']},
+
+{cat:'frm', title:'DD Form 1544 — Cash Meal Payment Book',
+ quick:'One coupon per cash meal sold. Reconcile coupons vs cash after every meal period. Any discrepancy must be documented and reported.',
+ rules:['Issue exactly one DD 1544 coupon per cash patron per meal.',
+        'Collect exact payment at current published meal rate.',
+        'Count coupons vs cash collected at the end of every meal — before the next meal begins.',
+        'Any discrepancy must be documented and reported to FSO immediately.',
+        'Retain DD 1544 books minimum 3 years.',
+        'Missing coupons with cash unaccounted for is treated as a financial violation.'],
+ mistakes:['Not reconciling coupons vs cash every meal.',
+            'Issuing extra coupons or failing to collect payment.',
+            'Leaving discrepancies undocumented.'],
+ hits:['Coupon vs cash discrepancy','Missing DD 1544 documentation'],
+ src:'NAVSUP P-486',
+ tags:['DD 1544','cash meal','coupon','reconcile','cash','financial']},
+
+{cat:'frm', title:'HACCP Logs — Requirements and Retention',
+ quick:'HACCP logs must be complete with no blank entries. Cover all CCPs: receiving, storage, cooking, holding, cooling, reheating, sanitizer. Retain 3 years.',
+ rules:['Separate logs for: receiving temps, walk-in temps (2×/day), cooking temps, hot/cold holding, cooling, reheating, sanitizer concentration.',
+        'NO BLANK ENTRIES — a blank looks like a missed check even if it was done.',
+        'Log must match actual conditions — inspectors may spot-check a log against what they observe.',
+        'Retain all HACCP logs minimum 3 years.',
+        'Inspectors look at HACCP logs first during every food service inspection.',
+        'Corrective actions must be documented when a CCP goes out of range.'],
+ mistakes:['Leaving blank entries when checks were done.',
+            'Logging numbers without actually checking temps.',
+            'Not documenting corrective action when a CCP fails.'],
+ hits:['Blank HACCP log entries — most common inspection finding','Log vs actual condition mismatch'],
+ src:'NAVSUP P-486',
+ tags:['HACCP logs','CCP','receiving','storage','cooking','cooling','sanitizer','retention','corrective action']},
+
+// ── GENERAL MESS OPERATIONS ───────────────────────────────
+{cat:'gm', title:'Chain of Command — GM Accountability',
+ quick:'CO holds ultimate responsibility. Delegates to SUPPO → FSO → FCPO (CS1/Chief). Each level has defined accountability.',
+ rules:['CO: ultimate responsibility for GM operations.',
+        'SUPPO (Supply Officer): appoints FSO in writing, financial oversight.',
+        'FSO (Food Service Officer): day-to-day GM management, approves substitutions, reviews logs.',
+        'FCPO (Food Service Leading CPO/CS1): supervises all CS, maintains daily records, trains crew.',
+        'FSO must be briefed immediately on any food safety failure, equipment casualty, or financial discrepancy.',
+        'Do not bypass the chain — take issues up through the proper routing.'],
+ mistakes:['CS1 hiding equipment or food safety issues from FSO.',
+            'FSO not reviewing 1090s regularly.',
+            'SUPPO not conducting periodic GM reviews.'],
+ hits:['Failure to report food safety failures up the chain','Inadequate FSO oversight documented'],
+ src:'NAVSUP P-486',
+ tags:['chain of command','CO','SUPPO','FSO','FCPO','CS1','accountability','GM']},
+
+{cat:'gm', title:'Menu Posting, Substitutions & Portion Control',
+ quick:'Menu must be posted 24 hours in advance. Substitutions require FSO approval. Portions must follow Pub 7 recipe cards — no eyeballing.',
+ rules:['Post approved menu minimum 24 hours before the meal period.',
+        'Any substitution requires FSO approval and must be documented.',
+        'Portions must match Pub 7 recipe card standards — use correct scoops and ladles.',
+        'Cycle menus (21 or 30 day) must be approved and followed.',
+        'Special menus (holidays, captain\'s dinner) require CO or FSO approval.',
+        'Over-portioning wastes subsistence funds. Under-portioning is a sailor welfare issue.'],
+ mistakes:['Substituting menu items without FSO approval.',
+            'Not posting the menu 24 hours ahead.',
+            'Eyeballing portions instead of using correct utensils.'],
+ hits:['Menu not posted','Substitutions not documented','Portions not matching recipe card'],
+ src:'NAVSUP P-486',
+ tags:['menu','substitution','portion control','FSO','cycle menu','recipe card','Pub 7']},
+
+{cat:'gm', title:'Meal Periods & General Mess Operating Standards',
+ quick:'Meal hours set by CO. All personnel must have access. Watch standers must be fed. Serving line standards apply throughout every meal period.',
+ rules:['Meal hours published in POD — CO-approved.',
+        'Watch standers who cannot attend regular meal hours must be accommodated.',
+        'Serving line: hot foods ≥135°F, cold foods ≤41°F, check every 2 hours.',
+        'Mid-rats: all food safety standards apply — no shortcuts because it is late.',
+        'Food must remain available for authorized personnel for the full meal period.',
+        'Document any meal period where service was interrupted or unavailable.'],
+ mistakes:['Closing the line early without authorization.',
+            'Relaxing food safety standards during mid-rats.',
+            'Not accommodating watch standers.'],
+ hits:['Line closed before authorized time','Temps not checked during service'],
+ src:'NAVSUP P-486',
+ tags:['meal periods','serving hours','watch standers','mid-rats','line standards','POD']},
+
+// ── PRODUCTION & MEAL SERVICE ─────────────────────────────
+{cat:'prod', title:'Production Schedule & Batch Cooking',
+ quick:'Production schedule drives the entire galley day. Batch cooking prevents over-production, reduces waste, and maintains food quality through service.',
+ rules:['Build production schedule from headcount forecast × Pub 7 recipe yield.',
+        'Batch cook — produce smaller quantities in stages to maintain quality and reduce waste.',
+        'First batch: enough for opening of service. Subsequent batches: replenish as needed.',
+        'Log all cooking temps for every protein batch before it goes to the line.',
+        'Coordinate replenishment timing with watch captain before service starts.',
+        'Track production against headcount — adjust future production based on actual usage.'],
+ mistakes:['Cooking everything at once — food quality degrades if held too long.',
+            'Not logging temps for each production batch.',
+            'No coordination between cook on watch and watch captain on replenishment timing.'],
+ hits:['Cooking temps not logged','Over-production leading to waste','Poor line replenishment'],
+ src:'NAVSUP P-486 · NAVSUP Pub 7',
+ tags:['production schedule','batch cooking','headcount forecast','replenishment','temps','waste']},
+
+{cat:'prod', title:'Serving Line Setup & Temperature Control',
+ quick:'Serving line must be set before service opens. Hot foods ≥135°F, cold foods ≤41°F. Check and log every 2 hours. Replenish before items run out.',
+ rules:['Steam table must reach operating temp before food is placed on line.',
+        'Verify all items are at proper holding temp before opening the line.',
+        'Log serving line temps at start of service and every 2 hours.',
+        'Cold bar/salad line: items at ≤41°F. Use ice baths where refrigerated equipment is unavailable.',
+        'Replenish in small batches — do not dump cold items into the hot line.',
+        'Ensure all serving utensils are clean and in place before opening.',
+        'All items on line must be labeled with item name.'],
+ mistakes:['Opening the line before verifying temp on every item.',
+            'Not logging temps during service.',
+            'Adding cold items to the steam table to warm up — this is a HACCP violation.',
+            'Running out of items completely before replenishing.'],
+ hits:['Food not at proper temp at start of service','Temp logs missing during service','Unlabeled line items'],
+ src:'NAVSUP P-486',
+ tags:['serving line','steam table','cold bar','temps','135','41','replenishment','logs']},
+
+{cat:'prod', title:'Leftovers — Cooling, Reheating & Waste Reduction',
+ quick:'Cool leftovers immediately after service. 135→70°F in 2 hrs, 70→41°F in 4 more hrs. Reheat to 165°F using cooking equipment only — never the steam table.',
+ rules:['Begin cooling leftovers immediately when service ends — not after cleanup.',
+        'Use shallow pans, ice bath with stirring, or blast chiller.',
+        'Log cooling start time and temperature for every batch.',
+        'Food that does not reach 70°F in 2 hours must be discarded.',
+        'Reheat to 165°F within 2 hours using oven, stovetop, or steam-jacketed kettle.',
+        'Never reheat in the steam table — it cannot safely bring food to 165°F.',
+        'Label all cooled leftovers: item, date, time. 7-day shelf life at 41°F.'],
+ mistakes:['Waiting until cleanup is done before starting the cooling process.',
+            'Cooling in deep containers — the center never reaches 70°F in time.',
+            'Reheating in the steam table.',
+            'Not logging cooling start time.'],
+ hits:['Cooling log missing','Food not reaching 70°F within 2 hours','Reheating in steam table'],
+ src:'NAVSUP P-486 · FDA Food Code',
+ tags:['leftovers','cooling','reheating','165','135','70','41','waste','blast chiller','ice bath']},
+
+// ── STOREROOM & RECEIVING ─────────────────────────────────
+{cat:'str', title:'Receiving Inspection — Full Procedure',
+ quick:'Inspect every delivery before signing the 335. Check temps, quantities, condition, and dates. Reject anything out of range.',
+ rules:['Use calibrated thermometer on every delivery of TCS items.',
+        'Cold TCS must arrive at ≤41°F. Frozen must be solid with no thaw indicators.',
+        'Count quantities against invoice before signing.',
+        'Check expiration/use-by dates on all items.',
+        'Inspect packaging — no tears, pest damage, or evidence of tampering.',
+        'Reject dented cans on the seam (botulism risk). Swollen cans: discard immediately.',
+        'Sign NAVSUP 335 only for accepted items. Document rejected items.',
+        'Stow refrigerated/frozen items immediately — cold chain priority.'],
+ mistakes:['Signing 335 before inspecting the delivery.',
+            'Accepting out-of-temp items.',
+            'Not counting quantities — accepting whatever is delivered.',
+            'Accepting dented seam or swollen cans.'],
+ hits:['Signed 335 for unverified delivery','Swollen/dented cans in storeroom','No receiving temps documented'],
+ src:'NAVSUP P-486',
+ tags:['receiving','335','inspection','temperature','dented cans','swollen cans','FIFO','cold chain']},
+
+{cat:'str', title:'FIFO, Storage Temperatures & Storeroom Organization',
+ quick:'New stock goes to the back. Old stock comes out first. All food 6 inches off deck. Fridge ≤41°F, freezer ≤0°F, dry storage 50–70°F. Log temps 2× daily.',
+ rules:['FIFO on every delivery — rotate existing stock forward, new stock to the back.',
+        'Log walk-in refrigerator and freezer temps twice daily, every day including weekends.',
+        'Walk-in refrigerator: ≤41°F. Walk-in freezer: ≤0°F. Dry storage: 50–70°F, humidity 50–60%.',
+        'All food stored minimum 6 inches off the deck and away from bulkheads.',
+        'Raw meat always stored BELOW ready-to-eat foods.',
+        'Storeroom locked when not attended.',
+        'Check expiration dates during every storeroom entry.'],
+ mistakes:['Not rotating FIFO when new delivery arrives.',
+            'Food stored on the deck.',
+            'Raw meat stored above RTE foods.',
+            'Storeroom left unlocked.'],
+ hits:['Food on deck','Raw meat above RTE','No FIFO rotation','Expired items','Storeroom unlocked'],
+ src:'NAVSUP P-486',
+ tags:['FIFO','storeroom','storage temperature','41','0','6 inches','raw meat','RTE','walk-in']},
+
+{cat:'str', title:'Pest Prevention in Storeroom',
+ quick:'Any pest evidence is an auto-fail inspection finding. Report immediately to CHENG and medical. Seal entry points, eliminate food sources, inspect regularly.',
+ rules:['Inspect storeroom for pest evidence during every entry — droppings, gnaw marks, live insects.',
+        'Report any pest evidence immediately to CHENG and ship\'s medical.',
+        'Document all pest findings and corrective actions.',
+        'Seal all entry points — gaps around pipes, drains, cable penetrations.',
+        'Keep storeroom clean — no food debris on deck or shelves.',
+        'Pest evidence on food contact surfaces = auto-fail inspection finding.',
+        'Store food in sealed containers where possible.'],
+ mistakes:['Ignoring pest evidence — "just one" is never acceptable.',
+            'Not reporting pest evidence immediately.',
+            'Leaving food debris in storeroom.'],
+ hits:['Pest evidence on food contact surface — AUTO-FAIL','Pest evidence without documented corrective action'],
+ src:'NAVSUP P-486 · OPNAVINST 5100.19',
+ tags:['pest','storeroom','CHENG','auto-fail','pest evidence','droppings','inspection']},
+
+// ── CLEANING & SANITATION ─────────────────────────────────
+{cat:'san', title:'Master Cleaning Schedule (MCS)',
+ quick:'MCS must be posted in the galley. Defines every cleaning task, frequency, responsible person, product, and method. Must be signed off as completed.',
+ rules:['MCS must be posted and current — not from last deployment.',
+        'Covers daily, weekly, and monthly cleaning tasks.',
+        'Each task lists: responsible person, frequency, cleaning product, method.',
+        'CS1/FCPO verifies and signs off completions.',
+        'Deep cleaning of hoods, grease traps, and drains on schedule.',
+        'Incomplete MCS = instant inspection finding.',
+        'MCS sign-off sheets must be retained.'],
+ mistakes:['Using an outdated MCS from a previous deployment.',
+            'Completing tasks but not signing the MCS.',
+            'No MCS posted at all.'],
+ hits:['MCS not posted','MCS incomplete or not signed off','MCS not current'],
+ src:'NAVSUP P-486 · CSOSS',
+ tags:['MCS','master cleaning schedule','cleaning','field day','sign off','posted','inspection']},
+
+{cat:'san', title:'Sanitizer Concentrations & 3-Compartment Sink',
+ quick:'Chlorine: 50–200 ppm. Iodine: 12.5–25 ppm. Quat: per label. Test every 4 hours. 3-compartment: Wash → Rinse → Sanitize → Air dry.',
+ rules:['Chlorine bleach: 50–200 ppm. Below 50 ppm: ineffective. Above 200 ppm: potentially harmful.',
+        'Iodine sanitizer: 12.5–25 ppm. Quat: follow manufacturer label.',
+        'Test sanitizer with correct test strips every 4 hours or after heavy use.',
+        'Change solution when visibly soiled or every 2 hours.',
+        'Clean BEFORE sanitizing — debris shields bacteria from the chemical.',
+        '3-compartment sequence: Wash (hot soapy water) → Rinse (clean water) → Sanitize → Air dry.',
+        'NEVER towel dry after sanitizing — reintroduces bacteria.',
+        'Chemical sanitize dishwasher: verify concentration. High-temp dishwasher: final rinse ≥180°F.'],
+ mistakes:['Not testing sanitizer concentration.',
+            'Sanitizing a dirty surface — debris blocks the chemical.',
+            'Towel drying after sanitizing.',
+            'Not changing sanitizer solution on schedule.'],
+ hits:['Sanitizer out of range','No test strips','Towel drying','Dishes not air dried'],
+ src:'NAVSUP P-486 · FDA Food Code',
+ tags:['sanitizer','chlorine','50','200','ppm','iodine','quat','test strips','3 compartment','air dry']},
+
+{cat:'san', title:'Chemical Storage & Hazmat in Galley',
+ quick:'Cleaning chemicals must be stored separately from food and food-contact surfaces. All containers labeled. SDS sheets accessible. Never mix bleach and ammonia.',
+ rules:['All chemicals stored in designated area — never near food or food-contact surfaces.',
+        'All chemical containers must be labeled with product name and hazard information.',
+        'SDS (Safety Data Sheets) must be accessible for every chemical used.',
+        'Never mix bleach with ammonia or acidic cleaners — produces toxic gas.',
+        'Use correct PPE when handling concentrated chemicals.',
+        'Chemical storage area must be inspected and documented on MCS.'],
+ mistakes:['Storing chemicals near or above food.',
+            'Using unlabeled chemical containers.',
+            'Missing SDS sheets.'],
+ hits:['Chemicals stored near food','Missing SDS sheets','Unlabeled chemical containers'],
+ src:'NAVSUP P-486 · OPNAVINST 5100.19',
+ tags:['chemicals','SDS','storage','bleach','ammonia','PPE','labeling','hazmat']},
+
+// ── EQUIPMENT & MAINTENANCE ───────────────────────────────
+{cat:'eqp', title:'Steam Table — Proper Use',
+ quick:'Steam table HOLDS food at ≥135°F. It does NOT cook, preheat, or reheat food from cold. Preheat steam table before placing food. Check temps every 2 hours.',
+ rules:['Preheat steam table to operating temp before placing food on line.',
+        'Place only pre-cooked, properly held food into the steam table.',
+        'NEVER use steam table to reheat food from cold or raw state.',
+        'NEVER use steam table to bring food up to safe temp — only to maintain it.',
+        'Check and log steam table temps every 2 hours during service.',
+        'Food below 135°F for more than 4 cumulative hours: discard.'],
+ mistakes:['Putting cold leftovers in the steam table to reheat.',
+            'Starting service before steam table is at operating temp.',
+            'Not checking temps during service.'],
+ hits:['Food reheated in steam table','Food below 135°F on line','No temp log during service'],
+ src:'NAVSUP P-486 · CSOSS',
+ tags:['steam table','holding','135','reheat','HACCP','hot holding','preheat']},
+
+{cat:'eqp', title:'Fryer — Safe Operation & Oil Management',
+ quick:'Fryer oil: 350–375°F. Never overfill. Filter daily. Change when dark, foamy, or off-smelling. Never leave unattended. Class K extinguisher required.',
+ rules:['Maintain oil at 350–375°F — below this causes soggy food; above causes burning.',
+        'Never fill fryer basket more than halfway — oil temperature drops and food gets greasy.',
+        'Filter oil daily. Change when it turns dark, foams excessively, or smells burnt.',
+        'Never leave the fryer unattended while in use.',
+        'Class K fire extinguisher must be accessible to the fryer.',
+        'NEVER use water on a grease fire — steam explosion spreads burning oil.',
+        'Log fryer oil changes and PMs on MCS.'],
+ mistakes:['Overfilling the fryer basket.',
+            'Using water on a grease fire.',
+            'Not filtering or changing oil on schedule.',
+            'Leaving fryer unattended.'],
+ hits:['Fryer PM overdue','No Class K extinguisher accessible','Oil visibly degraded'],
+ src:'NAVSUP P-486 · OPNAVINST 5100.19 · CSOSS',
+ tags:['fryer','350','375','oil','grease fire','Class K','PM','filter']},
+
+{cat:'eqp', title:'Walk-In Refrigerator & Freezer — Operations',
+ quick:'Fridge ≤41°F, freezer ≤0°F. Log temps twice daily. Report failures to CHENG immediately. Apply 2/4-hour rule during casualty.',
+ rules:['Log walk-in temps twice daily, every day — including weekends and holidays.',
+        'Walk-in refrigerator: ≤41°F. Walk-in freezer: ≤0°F.',
+        'Check door gaskets monthly — worn gaskets cause temperature failures.',
+        'Do not overload — proper airflow is required for temperature maintenance.',
+        'Alert CHENG and FSO immediately on any temperature failure.',
+        'During casualty: 2-hour rule (under 2 hrs above 41°F = can still use), 4-hour rule (over 4 hrs = discard).',
+        'Blast chiller must be operational for proper food cooling.'],
+ mistakes:['Not logging temps on weekends.',
+            'Overloading the walk-in — blocking airflow.',
+            'Delaying casualty report to CHENG.'],
+ hits:['Walk-in temps not logged','Temps out of range without documented corrective action','Overloaded walk-in'],
+ src:'NAVSUP P-486 · CSOSS · PMS/MRCs',
+ tags:['walk-in','refrigerator','freezer','41','0','temps','casualty','CHENG','2 hour','4 hour']},
+
+{cat:'eqp', title:'Thermometer Calibration',
+ quick:'Calibrate thermometers daily or before use. Ice water method: 32°F ±2°F. Log all calibrations. Replace any thermometer that cannot be calibrated.',
+ rules:['Ice water method: fill cup with ice and water, insert probe, should read 32°F ±2°F.',
+        'Boiling water method: 212°F ±2°F at sea level (adjust for altitude).',
+        'Calibrate daily or before first use of the day.',
+        'Log all calibrations in the calibration log.',
+        'Replace any thermometer that cannot reach within ±2°F of reference.',
+        'Use calibrated thermometers for all HACCP temp checks — uncalibrated = all temps unreliable.'],
+ mistakes:['Using uncalibrated thermometers for HACCP checks.',
+            'Not logging calibrations.',
+            'Not replacing thermometers that fail calibration check.'],
+ hits:['Uncalibrated thermometers','No calibration log','Thermometer reads outside ±2°F of reference'],
+ src:'NAVSUP P-486 · FDA Food Code',
+ tags:['thermometer','calibration','32','ice water','calibration log','HACCP','probe']},
+
+{cat:'eqp', title:'PMS / MRCs — Equipment Maintenance',
+ quick:'All galley equipment must be on a Preventive Maintenance (PM) schedule. Overdue MRCs are inspection findings. Report equipment casualties to CHENG immediately.',
+ rules:['Every piece of galley equipment has assigned MRCs (Maintenance Requirement Cards).',
+        'Track PM due dates. Overdue PMs are inspection deficiencies.',
+        'Report any equipment malfunction to CHENG immediately.',
+        'Never operate unsafe or malfunctioning equipment.',
+        'Document all completed PMs in equipment records.',
+        'CS1/supervisor maintains the PM schedule and tracks completion.',
+        'Hood fire suppression system: inspected semi-annually by qualified technician.'],
+ mistakes:['Letting PMs go overdue without tracking.',
+            'Operating equipment with known malfunctions.',
+            'Not reporting equipment casualties to CHENG.'],
+ hits:['Overdue PMs','Equipment operated with known malfunction','Hood suppression overdue for inspection'],
+ src:'CSOSS · PMS/MRCs · OPNAVINST 5100.19',
+ tags:['PMS','MRC','preventive maintenance','equipment','CHENG','casualty','hood','suppression']},
+
+// ── INSPECTION PREP ───────────────────────────────────────
+{cat:'ins', title:'Top Inspection Findings & Auto-Fails',
+ quick:'Most cited: unlabeled food · food on deck · HACCP log gaps · COMRATS fed free · sanitizer OOR · MCS issues. Auto-fail: pest on food-contact surface.',
+ rules:['MOST COMMON FINDINGS: Unlabeled food. Food on deck. HACCP log blank entries. COMRATS fed free. Sanitizer out of range. MCS not posted. Raw meat above RTE. Uncalibrated thermometers. Chemical storage near food. Expired items. No test strips.',
+        'AUTO-FAIL CONDITIONS: Pest evidence on food-contact surface. No running water at handwash sink. Bare-hand contact with RTE food on serving line. Operating equipment with known food safety failure.',
+        'Inspectors start with records (HACCP logs, 1090s) before physical inspection.',
+        'A pattern of incomplete records signals inadequate supervision regardless of physical space condition.'],
+ mistakes:['Only cleaning spaces before an inspection — records tell the full story.',
+            'Thinking a clean galley makes up for bad records.',
+            'Not knowing what auto-fails are.'],
+ hits:['See list above — these are the most cited findings across the fleet.'],
+ src:'OPNAV 5040/1 · NAVSUP P-486',
+ tags:['inspection','INSURV','TYCOM','auto-fail','unlabeled','HACCP log','pest','MCS','COMRATS']},
+
+{cat:'ins', title:'INSURV 30-Day Prep Plan',
+ quick:'Records first → walk spaces with 5040/1 → calibrate → brief crew → correct findings immediately. Inspections are won over months, not the day before.',
+ rules:['30 days out: Audit all HACCP logs and 1090s. Find gaps and document corrective actions.',
+        '30 days out: Walk all spaces with OPNAV 5040/1. Identify and correct every deficiency now.',
+        '2 weeks out: Calibrate all thermometers and log it. Verify MCS is current. Check all expiration dates.',
+        '2 weeks out: Confirm food handler training records are current for all personnel.',
+        '1 week out: Brief crew on how to answer inspector questions.',
+        'Day of: Walk spaces at 0500. Check temps. Crew in proper uniform.',
+        'How to answer: Be direct. Explain the WHY. "I don\'t know but I\'ll find out" is acceptable. Never guess. Never argue.'],
+ mistakes:['Starting inspection prep the week before.',
+            'Coaching sailors to say specific answers instead of understanding the material.',
+            'Correcting deficiencies during the inspection instead of beforehand.'],
+ hits:['Same deficiencies found every inspection — never fixed at root cause'],
+ src:'OPNAV 5040/1 · NAVSUP P-486',
+ tags:['INSURV','30 day','inspection prep','OPNAV 5040/1','records','audit','brief','crew']},
+
+// ── ADMIN & FINANCIALS ────────────────────────────────────
+{cat:'adm', title:'Food Cost & Financial Accountability',
+ quick:'Every meal consumed must be accounted for. Over-portioning, COMRATS violations, and undocumented issues all affect financial accountability.',
+ rules:['Food cost = subsistence value consumed ÷ number of meals served.',
+        'Monthly cost per meal is reported on NAVSUP 1291 to TYCOM.',
+        'COMRATS violations directly inflate food cost — meals given free without BAS credit.',
+        'Over-portioning = unauthorized subsistence expenditure.',
+        'Every item leaving the storeroom must have a 1149.',
+        'Discrepancies between inventory and records require written explanation.',
+        'Significant unaccounted losses may trigger a formal survey/investigation.'],
+ mistakes:['Not understanding the financial impact of COMRATS violations.',
+            'Letting over-portioning continue without correcting it.',
+            'Undocumented storeroom issues causing inventory discrepancies.'],
+ hits:['Unexplained inventory shortages','COMRATS fed free — financial violation','Over-portioning without accountability'],
+ src:'NAVSUP P-486',
+ tags:['food cost','financial accountability','1291','COMRATS','portioning','inventory','survey']},
+
+{cat:'adm', title:'Loss Documentation & Survey Procedures',
+ quick:'All food loss must be documented immediately. Significant losses require formal survey. DD 200 is used when financial liability is involved.',
+ rules:['Document all subsistence losses: spoilage, equipment failure, discards, over-issue.',
+        'Routine spoilage: record in daily log with item, quantity, reason, and supervisor signature.',
+        'Refrigeration failure discards: document failure time, items affected, temps, decision.',
+        'Significant losses → notify FSO → FSO notifies SUPPO → formal survey if required.',
+        'DD Form 200 (Financial Liability Investigation): used when negligence may have caused loss.',
+        'Individuals can be held financially liable for negligence-related losses.',
+        'Complete and immediate documentation from the moment of loss is your protection.'],
+ mistakes:['Discarding food during a casualty without documentation.',
+            'Delaying loss notification to FSO.',
+            'Not documenting why food was discarded.'],
+ hits:['Undocumented food loss','Casualty discards without paperwork','Missing survey documentation'],
+ src:'NAVSUP P-486',
+ tags:['loss documentation','survey','DD 200','financial liability','spoilage','casualty','discard']},
+
+// ── WARDROOM / CPO MESS ───────────────────────────────────
+{cat:'wrd', title:'Wardroom — Service Standards & Table Setting',
+ quick:'Forks left, knives/spoons right, outside-in order of use. Food from LEFT. Beverages and plate removal from RIGHT. Never clear until ALL guests are done.',
+ rules:['Table setting — left to right: forks (salad outside, dinner inside) | plate center | knife (blade in), spoons (dinner, soup outside).',
+        'Bread plate upper left. Glassware upper right: water, white wine, red wine.',
+        'Silverware placed in order of use — outside in = first course used first.',
+        'Food served from LEFT. Beverages poured from RIGHT. Plates removed from RIGHT.',
+        'Serve ladies and senior officers first.',
+        'Never clear a plate until ALL guests at the table are finished.',
+        'CS must be in proper service uniform. Stand at parade rest when not actively serving.'],
+ mistakes:['Clearing plates before all guests finish.',
+            'Serving food from the wrong side.',
+            'Breaking uniform or conduct standards during formal service.'],
+ hits:['Wrong service side','CS in wrong uniform during formal meal'],
+ src:'Navy Social Usage & Protocol · OPNAVINST 1710.7',
+ tags:['wardroom','table setting','formal dining','service','forks left','serve left','plates right']},
+
+{cat:'wrd', title:'Wardroom — Dining-In, Dining-Out & CPO Mess',
+ quick:'Dining-In: officers only, rigid program, toasts, grog bowl. Dining-Out: guests included. CS follows program timing exactly. CPO Mess: separate accountability, same food safety standards.',
+ rules:['Dining-In: officers only. Dining-Out: spouses and guests included.',
+        'CS role at formal events: follow program timing exactly, silence during toasts and ceremonies.',
+        'Respond only to Mess President during Dining-In/Out.',
+        'Coordinate course timing with Mess President in advance — get the program before the event.',
+        'CPO Mess: separate financial accountability from GM. Same HACCP and sanitation standards apply.',
+        'CS1/Chief assigned to CPO Mess: maintain same logs, temps, and hygiene as GM.',
+        'Wardroom financial accountability: separate mess fund, Mess Treasurer manages, annual audit required.'],
+ mistakes:['Serving a course at the wrong time during a formal event.',
+            'Making noise during a ceremonial toast.',
+            'Relaxing food safety standards in the CPO Mess.'],
+ hits:['Poor timing during formal event','Food safety standards not maintained in CPO Mess'],
+ src:'Navy Social Usage & Protocol · NAVSUP P-486',
+ tags:['dining in','dining out','CPO mess','wardroom','grog bowl','Mess President','formal event']},
+
+// ── UNDERWAY / EMERGENCY FEEDING ──────────────────────────
+{cat:'uw', title:'UNREP & Underway Stores Planning',
+ quick:'Order 2–3 weeks ahead. Plan full deployment + 10% buffer. UNREP: inspect immediately, cold items to walk-in first. Sign 335 only for accepted items.',
+ rules:['Calculate: deployment days × headcount × portion size. Add 10% contingency buffer.',
+        'Order DSCP 2–3 weeks ahead — underway lead times are long.',
+        'Local purchase: last resort. Requires CO and FSO approval. Full documentation.',
+        'Before getting underway: walk all storerooms, verify inventory against load plan, lock storerooms.',
+        'UNREP: inspect all items on receipt. Prioritize frozen/refrigerated to walk-in immediately.',
+        'Sign NAVSUP 335 only for items inspected and accepted.',
+        'Notify FSO early when stores are running low — not when they run out.'],
+ mistakes:['Not planning the 10% buffer.',
+            'Signing 335 without inspecting UNREP delivery.',
+            'Waiting until stores are out to notify FSO.'],
+ hits:['No buffer supply','Signed 335 for uninspected UNREP delivery','Stores out with no advance notification'],
+ src:'NAVSUP P-486',
+ tags:['UNREP','underway','stores','ordering','10%','buffer','335','deployment']},
+
+{cat:'uw', safety:true, title:'Refrigeration Casualty Response',
+ quick:'Note time discovered. Check all TCS food temps immediately. Apply 2/4-hour rule. Report to FSO and CHENG. Document all discards.',
+ rules:['Note EXACT time the casualty was discovered.',
+        'Check and document temperature of every TCS food item in the failed unit immediately.',
+        'Report to FSO and CHENG immediately — do not wait.',
+        '2-HOUR RULE: Under 2 hours above 41°F — food can still be used.',
+        '4-HOUR RULE: 2–4 hours above 41°F — use immediately, cannot return to refrigeration.',
+        'OVER 4 HOURS: Discard. No exceptions.',
+        'Document all discarded items for loss documentation.',
+        'Do not restock failed unit until repaired and back at operating temp.'],
+ mistakes:['Not noting the exact time of discovery.',
+            'Restocking repaired walk-in before verifying it is back to temp.',
+            'Not documenting discarded items.'],
+ hits:['No documented discovery time','Discards not documented','Restocking before temp verified'],
+ src:'NAVSUP P-486',
+ tags:['refrigeration casualty','walk-in','2 hour','4 hour','discard','CHENG','FSO','loss documentation']},
+
+{cat:'uw', safety:true, title:'Foodborne Illness Outbreak Response',
+ quick:'Multiple sailors with similar symptoms within 24–48 hours of eating in GM = outbreak protocol. Report immediately. Preserve ALL food as evidence.',
+ rules:['Report to FSO and ship\'s medical IMMEDIATELY — do not wait for more cases.',
+        'PRESERVE ALL FOOD from the suspected meal period — do NOT discard anything.',
+        'Secure and label remaining food as evidence.',
+        'Pull and secure all HACCP logs from the period.',
+        'Document everything served at the suspected meal: items, times, cooking temps, holding temps.',
+        'Do not discuss the situation outside official channels.',
+        'Cooperate fully with medical and investigative teams.'],
+ mistakes:['Discarding food before medical investigates.',
+            'Not reporting immediately.',
+            'Discussing the outbreak informally — creates command climate issues.'],
+ hits:['Food discarded before investigation','Delayed reporting','HACCP logs missing'],
+ src:'NAVSUP P-486 · NAVMED P-5010',
+ tags:['foodborne illness','outbreak','report','preserve food','evidence','HACCP logs','medical']},
+
+{cat:'uw', safety:true, title:'Grease Fire Response',
+ quick:'NEVER WATER. Smother with lid or Class K extinguisher. Hood suppression if fire reaches hood. Evacuate and sound general alarm if uncontrolled.',
+ rules:['Turn off heat source if safe to do so.',
+        'NEVER USE WATER on a grease fire — 1 cup of water expands 1,700× as steam, spreading burning oil.',
+        'Small pan fire: cover with a lid or sheet pan to smother.',
+        'Fryer fire: use Class K fire extinguisher.',
+        'Fire reaches hood: activate hood suppression system.',
+        'Not immediately controlled: evacuate all personnel, activate ship general alarm.',
+        'Never re-enter until Damage Control declares safe.',
+        'Hood suppression must be inspected semi-annually.'],
+ mistakes:['Using water on a grease fire — this kills people.',
+            'Not knowing the location of the Class K extinguisher.',
+            'Not knowing how to activate hood suppression.'],
+ hits:['Class K extinguisher not accessible','Hood suppression overdue for inspection'],
+ src:'OPNAVINST 5100.19',
+ tags:['grease fire','Class K','hood suppression','water','never','fryer','emergency']},
+
+{cat:'uw', title:'Battle Messing & Low-Stores Feeding',
+ quick:'Battle messing = simplified feeding during battle stations. Pre-position items. Self-serve format. All food safety standards still apply.',
+ rules:['Battle messing menu: pre-approved by CO. Simple, pre-positioned items.',
+        'Self-serve format allows feeding during battle stations without galley staffing.',
+        'All HACCP temps and food safety standards apply — no exceptions because of battle conditions.',
+        'Begin reduced-menu planning when stores reach 30-day supply.',
+        'Notify FSO when any category of stores falls below 30-day supply.',
+        'Emergency feeding options: MREs, emergency rations, cold menu.',
+        'Document all battle messing meals on NAVSUP 1090.'],
+ mistakes:['Relaxing food safety standards during battle messing.',
+            'Not notifying FSO when stores are low.',
+            'Not documenting battle messing meals on 1090.'],
+ hits:['Food safety standards not maintained during battle messing','Battle messing meals not documented'],
+ src:'NAVSUP P-486',
+ tags:['battle messing','battle stations','low stores','emergency feeding','1090','self-serve']},
+
+// ── CULINARY FUNDAMENTALS ─────────────────────────────────
+{cat:'cul', title:'Cooking Methods — Dry Heat vs Moist Heat',
+ quick:'Tender cuts = dry heat (grill, roast, sauté). Tough cuts = moist heat (braise, stew). Match the method to the protein.',
+ rules:['DRY HEAT — no added liquid: Roasting (oven, large cuts), Grilling (direct below), Broiling (direct above), Sautéing (high heat, minimal fat, tender cuts), Pan-frying (more fat, breaded items), Deep-frying (submerged, 350–375°F).',
+        'MOIST HEAT — liquid or steam: Braising (sear first, low heat 2–4 hrs, tough cuts), Stewing (smaller pieces, fully covered), Poaching (160–180°F liquid, eggs/fish), Steaming (above boiling, vegetables/fish), Simmering (180–205°F, stocks/soups).',
+        'Tough cuts (chuck, brisket, short ribs): moist heat converts collagen to gelatin — makes cheap cuts tender.',
+        'Tender cuts (tenderloin, ribeye): dry heat for quick cook. Moist heat makes them mushy.'],
+ mistakes:['Braising a tender cut — wastes money and quality.',
+            'Grilling a tough cut — stays tough.'],
+ hits:['Not tested on inspections but heavily tested on advancement exams.'],
+ src:'CS TRAMAN / NAVEDTRA · NAVSUP Pub 7',
+ tags:['cooking methods','dry heat','moist heat','braising','grilling','sautéing','roasting','deep frying']},
+
+{cat:'cul', title:'Meat & Poultry Temperatures and Primal Cuts',
+ quick:'Poultry 165°F · Ground meat 155°F · Pork/fish 145°F · Steaks 145°F · Tenderloin = most tender · Chuck/brisket = braise.',
+ rules:['COOKING TEMPS: Poultry (all) 165°F | Ground meat 155°F | Pork, fish, steaks 145°F | All other TCS 135°F.',
+        'BEEF PRIMALS (front to back): Chuck (tough, braise) → Rib (ribeye, prime rib, roast/grill) → Short Loin (NY strip, T-bone, tenderloin, grill) → Sirloin (grill) → Round (lean/tough, slow roast) → Brisket (slow cook).',
+        'Tenderloin = most tender beef cut. Psoas major muscle does almost no work.',
+        'PORK: Shoulder 145°F (braise/slow cook). Loin 145°F (roast/grill). Always verify with calibrated thermometer.',
+        'POULTRY: 165°F everywhere including stuffing. Dark meat (thighs) more forgiving than breast for volume cooking.'],
+ mistakes:['Cooking ground beef to 145°F — must reach 155°F.',
+            'Not checking internal temp — color alone is unreliable.'],
+ hits:['Cooking temps are heavily tested on advancement exams.'],
+ src:'CS TRAMAN / NAVEDTRA · FDA Food Code',
+ tags:['cooking temps','165','155','145','beef','pork','poultry','tenderloin','chuck','primal cuts']},
+
+{cat:'cul', title:'Knife Cuts — Sizes and Techniques',
+ quick:'Julienne = 1/8" matchstick · Brunoise = 1/8" cube · Small dice = 1/4" · Medium = 1/2" · Large = 3/4" · Chiffonade = thin ribbons. Claw grip always.',
+ rules:['Julienne: 1/8 × 1/8 × 2 inch matchstick. Brunoise: 1/8" cube (cross-cut from julienne).',
+        'Small dice: 1/4". Medium dice: 1/2". Large dice: 3/4". Tourné: 7-sided football shape.',
+        'Chiffonade: stack and roll leafy greens, slice thin — produces ribbons.',
+        'Mince: very fine irregular chop (garlic, shallots, herbs).',
+        'CLAW GRIP: curl fingertips under — protects them from blade. Always.',
+        'Dull knives are more dangerous than sharp — require more force and slip.',
+        'Carry knives blade down. Never leave knives in soapy water.'],
+ mistakes:['Not using claw grip — leading cause of knife injuries.',
+            'Using the wrong knife for the task.',
+            'Leaving knives in soapy water.'],
+ hits:['Knife cuts and claw grip are heavily tested on advancement exams.'],
+ src:'CS TRAMAN / NAVEDTRA · OPNAVINST 5100.19',
+ tags:['knife cuts','julienne','brunoise','small dice','medium dice','large dice','chiffonade','claw grip','safety']},
+
+{cat:'cul', title:'Stocks, Mother Sauces & Roux',
+ quick:'5 Mother Sauces: Béchamel (milk+roux) · Velouté (stock+roux) · Espagnole (brown stock) · Tomato · Hollandaise (butter+yolks). NEVER boil a stock.',
+ rules:['MOTHER SAUCES: Béchamel (milk + white roux) | Velouté (white stock + blonde roux) | Espagnole (brown stock + brown roux + mirepoix) | Tomato | Hollandaise (butter + yolks + acid).',
+        'ROUX: Equal parts fat and flour. White roux = most thickening. Brown/dark roux = less thickening, more flavor.',
+        'STOCKS: Always simmer, NEVER boil — boiling permanently clouds stock by emulsifying fat and albumin.',
+        'Skim stock foam during first 30 minutes.',
+        'White stock: unroasted bones. Brown stock: roasted bones. Fish fumet: max 30 minutes.',
+        'Mirepoix: 2 parts onion, 1 part carrot, 1 part celery.'],
+ mistakes:['Boiling a stock — cannot be fixed once cloudy.',
+            'Confusing the mother sauces — common exam failure.'],
+ hits:['Mother sauces are the most tested culinary topic on advancement exams.'],
+ src:'CS TRAMAN / NAVEDTRA · NAVSUP Pub 7',
+ tags:['mother sauces','bechamel','velouté','espagnole','hollandaise','roux','stock','mirepoix']},
+
+{cat:'cul', title:'Kitchen Math — Measurements, Scaling & Food Cost',
+ quick:'3 tsp=1 tbsp · 8 oz=1 cup · 2 cups=1 pt · 2 pt=1 qt · 4 qt=1 gal · 16 oz=1 lb. Scale: new÷old=factor. AP÷yield%=order amount.',
+ rules:['VOLUME: 3 tsp=1 tbsp | 2 tbsp=1 fl oz | 8 fl oz=1 cup | 2 cups=1 pt | 2 pt=1 qt | 4 qt=1 gal.',
+        'WEIGHT: 16 oz = 1 lb.',
+        'RECIPE SCALING: Conversion factor = new yield ÷ old yield. Multiply every ingredient by the factor.',
+        'AP vs EP: As Purchased weight ÷ yield% = what to order. Example: need 10 lb clean carrots at 80% yield → order 10÷0.80 = 12.5 lb.',
+        'Food cost %: food cost ÷ selling price × 100.'],
+ mistakes:['Not using conversion factor — scaling by memory causes large errors.',
+            'Ordering AP weight without accounting for yield — running short during service.'],
+ hits:['Kitchen math is consistently on every CS advancement exam.'],
+ src:'CS TRAMAN / NAVEDTRA',
+ tags:['kitchen math','teaspoon','tablespoon','cup','quart','gallon','scaling','conversion factor','AP','EP','yield']},
+
+{cat:'cul', title:'Baking — Leavening, Methods & Common Failures',
+ quick:'Yeast = bread. Baking powder = cakes/muffins (no acid needed). Baking soda = needs acid. Proof yeast in 105°F water. Never overmix muffins.',
+ rules:['Yeast: biological, ferments sugar → CO2. Proof in 105°F water with sugar — foam in 10 min = active. Killed by water >110°F.',
+        'Baking powder: double-acting chemical leavening. No proofing needed. Used in cakes, muffins, pancakes.',
+        'Baking soda: requires acid to activate (buttermilk, lemon, vinegar). Reacts immediately — bake right after mixing.',
+        'Creaming method (cakes): cream fat + sugar first, then eggs, then dry/wet alternating.',
+        'Muffin method: mix wet and dry separately, combine minimally. Lumps are OK — overmixing causes tough muffins with tunnels.',
+        'Straight dough method (yeast bread): mix all, knead, proof, shape, second proof, bake.'],
+ mistakes:['Not proofing yeast — wastes an entire batch when it fails.',
+            'Overmixing muffin batter — produces tough, tunnel-filled muffins.',
+            'Water too hot for yeast — kills it before dough is mixed.'],
+ hits:['Baking knowledge is heavily tested on CS advancement exams.'],
+ src:'CS TRAMAN / NAVEDTRA · NAVSUP Pub 8',
+ tags:['baking','yeast','baking powder','baking soda','proofing','muffin method','creaming','scaling']},
+
+// ── TROUBLESHOOTING ───────────────────────────────────────
+{cat:'trb', title:'Cooking Failures — Proteins & Starches',
+ quick:'Dry chicken: overcooked. Gluey mash: overworked or wrong potato. Scorched rice: too high heat or lid removed. Soggy fried food: oil too cool or overcrowded.',
+ rules:['Dry chicken: overcooked, wrong method, or breast vs. thigh. Use thighs for volume cooking — more forgiving.',
+        'Gluey mashed potatoes: waxy potato used (use russets), or over-mixed. Cannot fix once gluey — prevention only.',
+        'Scorched rice: heat too high after boiling, lid removed, or wrong ratio (1:1.75 rice to water). For volume: use steam kettle or combi oven.',
+        'Soggy fried food: oil too cool (<350°F), fryer overcrowded, or food wet before breading.',
+        'Fix for soggy fried: maintain 350–375°F, fry in small batches, pat food dry, drain on wire rack.'],
+ mistakes:['Using Yukon Gold or red potatoes for mashed potatoes.',
+            'Lifting the lid while rice cooks.',
+            'Overfilling the fryer basket.'],
+ hits:['Troubleshooting knowledge is tested on advancement exams.'],
+ src:'CS TRAMAN / NAVEDTRA',
+ tags:['troubleshooting','dry chicken','gluey potatoes','scorched rice','soggy fried','fryer','russet']},
+
+{cat:'trb', title:'Sauce & Stock Failures',
+ quick:'Broken gravy: whisk off heat, add cold liquid. Cloudy stock: boiled — cannot fix. Split hollandaise: blend in new egg yolk base slowly.',
+ rules:['Broken/split gravy: fat separated. Fix: remove from heat, whisk vigorously, add cold liquid slowly to rebuild emulsion.',
+        'Cloudy stock: boiled instead of simmered — fat and albumin permanently emulsified. Cannot fix. Prevention only.',
+        'Flat sauce: not enough acid or seasoning. Taste and adjust.',
+        'Split hollandaise: sauce broke (temp too high or too fast addition). Fix: start new base of egg yolks + water, slowly whisk broken sauce into new base.',
+        'Lumpy béchamel: roux not cooked enough or cold milk added too fast. Strain and whisk vigorously.'],
+ mistakes:['Boiling a stock hoping it clears — it will not.',
+            'Adding cold roux to hot liquid too fast — causes lumps.',
+            'Overheating hollandaise — eggs scramble.'],
+ hits:['Sauce troubleshooting knowledge tested on advancement exams.'],
+ src:'CS TRAMAN / NAVEDTRA',
+ tags:['troubleshooting','broken gravy','cloudy stock','hollandaise','bechamel','lumpy','sauce','stock']},
+
+{cat:'trb', title:'Sanitizer & Equipment Failures',
+ quick:'Sanitizer OOR: make fresh batch immediately, document, find cause. Walk-in failure: note time, check all TCS temps, apply 2/4-hour rule, report CHENG/FSO.',
+ rules:['Sanitizer out of range: discard solution, make fresh batch, test with strips, document the event.',
+        'Possible causes of low sanitizer: too old, too warm, heavily soiled — change more frequently.',
+        'Thermometer reads incorrectly: recalibrate immediately. If cannot calibrate: remove from service, replace.',
+        'Walk-in temp failure: note time, check all TCS food temps, apply 2/4-hour rule, report immediately.',
+        'Dishwasher final rinse below 180°F: take out of service, notify CHENG, use 3-compartment sink.'],
+ mistakes:['Continuing to use out-of-range sanitizer.',
+            'Using a thermometer that reads incorrectly.',
+            'Continuing to run food through a malfunctioning dishwasher.'],
+ hits:['Using uncalibrated equipment','Continuing to use failed equipment'],
+ src:'NAVSUP P-486 · CSOSS',
+ tags:['troubleshooting','sanitizer','walk-in','thermometer','dishwasher','failure','corrective action']},
+
+// ── LEADERSHIP & TRAINING ─────────────────────────────────
+{cat:'ldr', title:'CS1 & CSC — Core Responsibilities',
+ quick:'CS1 owns the deck plate: records, training, watchbill, standards enforcement. CSC owns the department: financial accountability, inspections, chain of command.',
+ rules:['CS1: own all daily records (1090, HACCP, MCS). Supervise and train all junior CS. Enforce food safety and uniform standards consistently.',
+        'CS1: manage watchbill — every meal covered, fair rotation, posted 2 weeks out.',
+        'CS1: prepare sailors for advancement — practical factors completed before cycle, study groups, exam registration.',
+        'CSC: department-level financial accountability. Inspection ownership. Brief CO regularly on GM status.',
+        'Both: correct in private, praise in public. Document counseling from the first verbal warning.',
+        'Compliance culture vs. standards culture: sailors doing right ONLY when watched = compliance. Understanding WHY = standards.'],
+ mistakes:['CS1 waiting for the inspection to enforce standards.',
+            'Skipping documentation of counseling — no paper trail = no progressive discipline.',
+            'Waiting for advancement season to start training sailors.'],
+ hits:['Leadership and supervision are examined during INSURV in addition to spaces and records.'],
+ src:'MILPERSMAN · NAVSUP P-486 · Navy Leadership Manual',
+ tags:['CS1','CSC','leadership','responsibilities','watchbill','counseling','training','advancement']},
+
+{cat:'ldr', title:'Training Junior Sailors — Practical Approach',
+ quick:'Train on the job daily. Explain the WHY, not just the what. Document all training. Complete practical factors before advancement cycle.',
+ rules:['Explain the reason behind every food safety rule — sailors who understand comply better under stress.',
+        'Correct on the spot, privately. Praise publicly.',
+        'Document all formal and informal training in sailor\'s training jacket.',
+        'Practical factors must be completed and signed off before the advancement exam.',
+        'Study groups: organize weekly 30-minute sessions — cover TRAMAN, P-486, and scenario questions.',
+        'Example training method: "I\'m cooling this in a shallow pan because a deep container won\'t reach 70°F in 2 hours — which means we\'d have to discard the whole batch."'],
+ mistakes:['Training only before advancement season.',
+            'Correcting sailors publicly — creates resentment, not compliance.',
+            'Not documenting practical factors — sailor cannot advance without them.'],
+ hits:['Training records not current','Practical factors not documented'],
+ src:'MILPERSMAN · CS TRAMAN / NAVEDTRA',
+ tags:['training','practical factors','advancement','study group','counseling','documentation','TRAMAN']},
+
+{cat:'ldr', title:'Watchbill Management & Undermanned Operations',
+ quick:'Post watchbill 2 weeks out. Rotate all positions fairly. Mid-rats required. Undermanned: simplify menu, notify FSO — never sacrifice food safety.',
+ rules:['Post watchbill minimum 2 weeks in advance.',
+        'Rotate all positions — every sailor works all stations over time. Favoritism destroys morale.',
+        'Mid-rats: minimum coverage required. Watch standers must be fed — it is a readiness requirement.',
+        'Undermanned: simplify the menu first, then notify FSO. Never push short-staffed crew to dangerous limits.',
+        'A simple, safe, warm meal beats an ambitious unsafe one every time.',
+        'Document all watchbill changes. Last-minute changes within 24 hours should be rare exceptions.'],
+ mistakes:['Consistently assigning the same sailors to undesirable stations.',
+            'Not accommodating watch standers for meals.',
+            'Pushing through full menu with half the crew — food safety suffers.'],
+ hits:['Undermanned situations that lead to food safety failures are a leadership issue, not just an ops issue.'],
+ src:'MILPERSMAN · Navy Leadership Manual',
+ tags:['watchbill','undermanned','mid-rats','rotation','morale','food safety','scheduling']},
+
+]; // END REF
+
+
+// data-quiz.js
+const QUIZ = [
+
+// ── FOOD SAFETY ──────────────────────────────────────────
+{q:'What is the minimum internal cooking temperature for all poultry?',
+ opts:['145°F','155°F','165°F','135°F'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'All poultry — chicken, turkey, duck, stuffed items — must reach 165°F at the thickest part away from bone. This kills Salmonella and other common poultry pathogens.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'What is the temperature danger zone?',
+ opts:['32°F to 135°F','41°F to 135°F','41°F to 165°F','32°F to 165°F'],c:1,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'41°F to 135°F is the danger zone. Bacteria multiply most rapidly in this range — doubling every 20 minutes at optimal temps. TCS foods must spend minimal time here.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'A cook finds a case of chicken thawing on the counter at room temperature. What is the correct action?',
+ opts:['Cook it immediately before it spoils','Continue — it is almost done thawing','Stop the thaw immediately, notify the watch captain, use an approved method',
+       'Move it to the walk-in and continue thawing'],c:2,cat:'Food Safety',diff:'medium',lvl:'E4',
+ explain:'Room temperature thawing is never approved. The food surface enters the danger zone while the interior is still frozen. Stop, report, and use refrigerator, cold running water, microwave (cook immediately), or cooking process.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'What is the correct two-step cooling procedure for TCS food?',
+ opts:['165°F to 41°F within 4 hours total','135°F to 41°F within 2 hours total',
+       '135°F to 70°F within 2 hours, then 70°F to 41°F within 4 more hours',
+       '135°F to 70°F within 4 hours, then 70°F to 41°F within 2 more hours'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'Step 1: 135°F to 70°F within 2 hours. Step 2: 70°F to 41°F within 4 more hours. Total maximum: 6 hours. Cooling is the most failed HACCP CCP Navy-wide.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'Which method of thawing is NOT approved?',
+ opts:['Refrigerator thawing','Cold running water at 70°F or below',
+       'On the counter at room temperature','As part of the cooking process'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'Room temperature thawing is never approved. The four approved methods are: refrigerator, cold running water (≤70°F, continuously flowing), microwave (cook immediately after), and as part of cooking.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'TCS food has been above 41°F for 5 hours due to a walk-in failure. What do you do?',
+ opts:['Reheat to 165°F and serve','Move to the freezer to stop bacterial growth',
+       'Discard — food above 41°F for more than 4 cumulative hours must be discarded',
+       'Use immediately without reheating'],c:2,cat:'Food Safety',diff:'medium',lvl:'E4',
+ explain:'Food above 41°F for more than 4 cumulative hours must be discarded. No exceptions. Reheating does not eliminate toxins produced by bacteria during that time.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'What minimum internal temperature is required for ground beef patties?',
+ opts:['135°F','145°F','155°F','165°F'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'Ground meat requires 155°F. Grinding distributes surface bacteria throughout the product, requiring a higher temperature than intact muscle cuts.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'A food handler reports vomiting since last night. What is the correct action?',
+ opts:['Have them wear gloves and work the grill only','Restrict them to scullery',
+       'Exclude from the galley immediately — notify FSO and medical',
+       'Let them work the first meal then send to sick call'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'Vomiting is one of five exclusion conditions. Remove immediately from all food-contact areas. Notify FSO and ship\'s medical. Do not allow return without medical clearance.',
+ src:'NAVSUP P-486 · NAVMED P-5010'},
+
+{q:'What is the correct chlorine bleach sanitizer concentration?',
+ opts:['10–50 ppm','50–200 ppm','200–400 ppm','5–10 ppm'],c:1,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'Chlorine sanitizer must be maintained at 50–200 ppm. Below 50 ppm is ineffective. Above 200 ppm can be harmful to food-contact surfaces and personnel.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'The steam table is used to:',
+ opts:['Cook food from raw','Reheat chilled leftovers to 165°F',
+       'Hold food at 135°F or above after it has been properly cooked',
+       'Defrost frozen menu items'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'The steam table is a holding device only. It maintains temp at ≥135°F. It cannot safely cook raw food or reheat chilled food to 165°F — always use cooking equipment to reheat first.',
+ src:'NAVSUP P-486'},
+
+{q:'How often must hot holding temperatures be checked and logged during service?',
+ opts:['Once at the start of service','Every 30 minutes','Every 2 hours','Every 4 hours'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'Hot holding temps must be checked and logged every 2 hours during service. This catches a failure before the 4-hour discard threshold is reached.',
+ src:'NAVSUP P-486'},
+
+{q:'What is the maximum total time allowed to cool food from 135°F to 41°F?',
+ opts:['2 hours','4 hours','6 hours','8 hours'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'Total cooling time maximum is 6 hours: 135→70°F in 2 hours, then 70→41°F in 4 more hours. Food not at 41°F within 6 hours must be discarded.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'All prepared food stored in the walk-in must be labeled with:',
+ opts:['Just the item name','Item name and preparation date',
+       'Item name, preparation date, and time','Sailor\'s initials only'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'Labels must include item name, preparation date, and time. Unlabeled food is the most commonly cited inspection finding Navy-wide.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'Raw chicken should be stored WHERE relative to cooked pasta salad in the walk-in?',
+ opts:['On the same shelf','Above the pasta salad',
+       'Below the pasta salad','In a separate walk-in only'],c:2,cat:'Food Safety',diff:'easy',lvl:'E4',
+ explain:'Raw meat must always be stored BELOW ready-to-eat foods. Juices from raw poultry can contaminate RTE foods stored below — cross-contamination causes foodborne illness.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+{q:'Food reheated for service must reach what temperature, using what equipment?',
+ opts:['135°F, in the steam table','165°F, in the steam table',
+       '165°F, using cooking equipment — oven, stovetop, or steam kettle',
+       '145°F, using any available heat source'],c:2,cat:'Food Safety',diff:'medium',lvl:'E4',
+ explain:'Reheating must reach 165°F within 2 hours using cooking equipment. The steam table cannot safely reheat food — it only maintains temp. Reheating in the steam table is a critical HACCP violation.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+// ── FORMS & RECORDS ──────────────────────────────────────
+{q:'What NAVSUP form is the primary daily financial accountability document?',
+ opts:['NAVSUP 335','NAVSUP 1291','NAVSUP 1090','NAVSUP 1149'],c:2,cat:'Forms',diff:'easy',lvl:'E4',
+ explain:'NAVSUP 1090 (Food Service Record) is the daily record. Completed every meal period. Records meals by category, subsistence costs, and cash collected. Retained 3 years.',
+ src:'NAVSUP P-486'},
+
+{q:'A delivery arrives from DSCP. Some chicken items read 52°F. What should the receiving sailor do?',
+ opts:['Accept everything and put it directly in the walk-in',
+       'Accept it — DSCP items are always safe',
+       'Reject the out-of-temp items, sign NAVSUP 335 only for accepted items',
+       'Sign the 335 and note the temp issue as a comment'],c:2,cat:'Forms',diff:'medium',lvl:'E4',
+ explain:'Reject out-of-temp items. Cold TCS must arrive at ≤41°F. Sign NAVSUP 335 ONLY for items you inspected and accepted. Your signature is legal accountability for what was received.',
+ src:'NAVSUP P-486'},
+
+{q:'What form is required every time food is transferred from the storeroom to the galley?',
+ opts:['NAVSUP 335','NAVSUP 1090','NAVSUP 1149','NAVSUP 367'],c:2,cat:'Forms',diff:'easy',lvl:'E4',
+ explain:'NAVSUP 1149 (Receipt/Issue of Provisions) must be completed for every storeroom transfer. Both the issuer and receiver sign. Missing 1149s create inventory discrepancies that look like theft.',
+ src:'NAVSUP P-486'},
+
+{q:'How long must all food service records be retained?',
+ opts:['1 year','18 months','3 years','5 years'],c:2,cat:'Forms',diff:'easy',lvl:'E4',
+ explain:'All food service records — 1090s, 1291s, 335s, 1149s, 367s, menus, and HACCP logs — must be retained for a minimum of 3 years.',
+ src:'NAVSUP P-486'},
+
+{q:'The DD 1544 cash meal coupons do not match the cash collected after dinner service. What should be done?',
+ opts:['Average the difference and continue','Document the discrepancy and report to the FSO immediately',
+       'Assume it is a counting error and ignore it','Adjust the 1090 to match the cash'],c:1,cat:'Forms',diff:'medium',lvl:'E5',
+ explain:'Any discrepancy between DD 1544 coupons and cash must be documented and reported to the FSO immediately. Unaccounted discrepancies are financial violations.',
+ src:'NAVSUP P-486'},
+
+{q:'HACCP logs have several blank entries from last week. What does this indicate to an inspector?',
+ opts:['That the watches were very busy','That checks were done but not recorded',
+       'That the checks may not have been done — a blank entry = missed check',
+       'Nothing significant'],c:2,cat:'Forms',diff:'medium',lvl:'E5',
+ explain:'A blank entry in a HACCP log looks like the check was not done. Inspectors treat blank entries as missed checks regardless of what actually happened. Logs must have no blank entries.',
+ src:'NAVSUP P-486 · OPNAV 5040/1'},
+
+{q:'Which monthly report is submitted to TYCOM summarizing GM financial activity?',
+ opts:['NAVSUP 1090','NAVSUP 1291','NAVSUP 335','DD Form 1544'],c:1,cat:'Forms',diff:'easy',lvl:'E5',
+ explain:'NAVSUP 1291 (Monthly Food Service Report) summarizes total meals served, total subsistence cost, and average cost per meal for the accounting period. Submitted to TYCOM monthly.',
+ src:'NAVSUP P-486'},
+
+// ── HEADCOUNT & ENTITLEMENTS ──────────────────────────────
+{q:'A COMRATS sailor tries to eat in the GM for free. What should the watch captain do?',
+ opts:['Serve them — they are still a sailor in the crew',
+       'Do not serve them for free — COMRATS sailors receive extra BAS to mess separately',
+       'Serve them breakfast only','Allow it this one time and report later'],c:1,cat:'Headcount',diff:'easy',lvl:'E4',
+ explain:'COMRATS sailors receive extra BAS to mess separately — they are NOT entitled to eat in the GM for free. This is the #1 audit finding Navy-wide. They may pay cash and receive a DD 1544 coupon.',
+ src:'NAVSUP P-486 · MILPERSMAN'},
+
+{q:'What does SIK stand for, and what does it mean for a sailor\'s GM entitlement?',
+ opts:['Standard Issue Kit — no relation to food service',
+       'Subsistence In Kind — ship collects their BAS and feeds them in the GM',
+       'Subsistence Invoice Key — used for ordering',
+       'Sailor Identification Key — used for headcount'],c:1,cat:'Headcount',diff:'easy',lvl:'E4',
+ explain:'SIK = Subsistence In Kind. The ship collects the sailor\'s BAS and provides meals in the GM. SIK sailors ARE entitled to eat in the GM. This is the standard for most ship-assigned enlisted.',
+ src:'NAVSUP P-486 · MILPERSMAN'},
+
+{q:'A TAD sailor arrives at the serving line. What must you verify before feeding them?',
+ opts:['Their rank','Their orders — not all TAD are entitled to eat in the GM',
+       'Nothing — TAD sailors are always entitled','Their command'],c:1,cat:'Headcount',diff:'medium',lvl:'E4',
+ explain:'TAD personnel vary in entitlement. You must verify their orders before feeding them. Some TAD are entitled, some are not. Never feed TAD personnel without verifying orders.',
+ src:'NAVSUP P-486'},
+
+{q:'An officer shows up at the enlisted serving line during lunch. What do you do?',
+ opts:['Serve them — officers are always entitled','Charge them the cash meal rate',
+       'Politely direct them to the wardroom — officers mess separately',
+       'Serve them only if the wardroom is closed'],c:2,cat:'Headcount',diff:'easy',lvl:'E4',
+ explain:'Officers mess in the wardroom, not the enlisted GM. Serving an officer in the GM creates a financial accountability discrepancy — wardroom and GM have separate financial records.',
+ src:'NAVSUP P-486'},
+
+// ── STOREROOM & RECEIVING ─────────────────────────────────
+{q:'What does FIFO stand for, and why does it matter?',
+ opts:['First Item Frozen Out — frozen items used before fresh',
+       'First In First Out — older stock used before newer stock',
+       'Fresh Inventory For Operations — keep stores fresh',
+       'Food Inspection For Officers — officers inspect stores'],c:1,cat:'Storeroom',diff:'easy',lvl:'E4',
+ explain:'FIFO = First In First Out. Older stock moves to the front and is used before new deliveries. Without FIFO, new stock gets used first and older items expire in the back.',
+ src:'NAVSUP P-486'},
+
+{q:'A delivery contains several cans with dented seams. What is the correct action?',
+ opts:['Accept and use them quickly before they spoil',
+       'Reject them — dented seams are a botulism risk',
+       'Accept and put them at the back of stores',
+       'Accept as long as the seal is not broken'],c:1,cat:'Storeroom',diff:'medium',lvl:'E4',
+ explain:'Reject cans with dented seams — the seam is the sealed joint, and damage there can introduce Clostridium botulinum (botulism). Cosmetic dents on the body are less critical, but seam dents are always rejected.',
+ src:'NAVSUP P-486'},
+
+{q:'Food in the storeroom must be stored at minimum how far off the deck?',
+ opts:['2 inches','4 inches','6 inches','12 inches'],c:2,cat:'Storeroom',diff:'easy',lvl:'E4',
+ explain:'All food must be stored minimum 6 inches off the deck and away from bulkheads. This prevents pest contamination and allows proper cleaning underneath and around stored items.',
+ src:'NAVSUP P-486'},
+
+{q:'You find pest droppings behind shelving in the dry storeroom. What is the first action?',
+ opts:['Clean it up and monitor the area','Report immediately to CHENG and ship\'s medical',
+       'Move all food to a different location and continue operations',
+       'Set a trap and check back tomorrow'],c:1,cat:'Storeroom',diff:'easy',lvl:'E4',
+ explain:'Pest evidence must be reported immediately to CHENG and ship\'s medical. Document the finding. Pest evidence on food-contact surfaces is an automatic inspection failure. Do not ignore it.',
+ src:'NAVSUP P-486 · OPNAVINST 5100.19'},
+
+// ── INSPECTION ────────────────────────────────────────────
+{q:'Which OPNAV form is the official Navy food service inspection checklist?',
+ opts:['OPNAV 1750.1','OPNAV 5040/1','OPNAV 4100.2','OPNAV 3120.32'],c:1,cat:'Inspection',diff:'medium',lvl:'E5',
+ explain:'OPNAV 5040/1 is the official food service inspection checklist used by INSURV, TYCOM, and chain of command. Walking your spaces with this form regularly is the best inspection preparation.',
+ src:'OPNAV 5040/1'},
+
+{q:'An inspector finds food stored directly on the deck of the storeroom. This is:',
+ opts:['A minor advisory note','A moderate finding','An automatic inspection failure','Not a finding if packaging is sealed'],c:2,cat:'Inspection',diff:'easy',lvl:'E4',
+ explain:'Food on the deck is an automatic inspection failure regardless of packaging condition. Food must be stored minimum 6 inches off the deck.',
+ src:'OPNAV 5040/1 · NAVSUP P-486'},
+
+{q:'An inspector asks a CS3 why they check walk-in temps twice daily. The best answer is:',
+ opts:['Because P-486 says to',
+       'Because the CS1 told me to',
+       'To identify temperature failures before food spends more than 4 hours in the danger zone',
+       'To fill out the log'],c:2,cat:'Inspection',diff:'hard',lvl:'E5',
+ explain:'Explaining the WHY demonstrates real understanding. Inspectors note sailors who understand the reason behind procedures vs. those who only know the rule. "To catch failures before food has to be discarded" is the correct answer.',
+ src:'OPNAV 5040/1 · NAVSUP P-486'},
+
+{q:'Which of these is an auto-fail inspection condition?',
+ opts:['One blank entry in a HACCP log',
+       'Grease filters slightly overdue for cleaning',
+       'Pest evidence found on a food-contact surface',
+       'One item stored 4 inches off the deck instead of 6'],c:2,cat:'Inspection',diff:'medium',lvl:'E5',
+ explain:'Pest evidence on food-contact surfaces is an automatic inspection failure. It represents an active contamination risk that cannot be partially graded.',
+ src:'OPNAV 5040/1'},
+
+{q:'When do inspectors typically review records during a food service inspection?',
+ opts:['After the physical space walkthrough','Before the physical walkthrough — records are reviewed first',
+       'Only if they find a physical deficiency','Records are rarely reviewed'],c:1,cat:'Inspection',diff:'medium',lvl:'E5',
+ explain:'Inspectors typically review records (HACCP logs, 1090s) BEFORE the physical walkthrough. Incomplete records signal inadequate supervision even if the physical spaces look clean.',
+ src:'OPNAV 5040/1'},
+
+// ── EQUIPMENT ─────────────────────────────────────────────
+{q:'The fryer is the correct temperature when the oil reads:',
+ opts:['275–300°F','350–375°F','400–450°F','250°F'],c:1,cat:'Equipment',diff:'easy',lvl:'E4',
+ explain:'Deep fryer oil should be maintained at 350–375°F. Below 350°F causes food to absorb oil before a crust forms (soggy food). Above 375°F burns the exterior before the interior is cooked.',
+ src:'CS TRAMAN / NAVEDTRA · OPNAVINST 5100.19'},
+
+{q:'You should NEVER do this on a grease fire:',
+ opts:['Use a Class K extinguisher','Cover with a lid to smother',
+       'Use water','Activate hood suppression'],c:2,cat:'Equipment',diff:'easy',lvl:'E4',
+ explain:'NEVER use water on a grease fire. Water instantly converts to steam and expands 1,700× in volume, throwing burning oil in every direction. This kills people. Use Class K extinguisher, smother, or activate hood suppression.',
+ src:'OPNAVINST 5100.19'},
+
+{q:'The walk-in refrigerator reads 48°F during morning temperature checks. What is the first action?',
+ opts:['Turn the thermostat down and check in an hour',
+       'Document the exact discovery time, check all TCS food temps immediately, and report to FSO and CHENG',
+       'Move everything to the freezer',
+       'Continue normal operations — equipment fluctuates'],c:1,cat:'Equipment',diff:'hard',lvl:'E5',
+ explain:'Refrigeration casualty: note exact discovery time first — time determines the 2/4-hour rule. Then check all TCS food temps and report to FSO and CHENG immediately. Time of discovery drives every decision.',
+ src:'NAVSUP P-486 · CSOSS'},
+
+{q:'Thermometers must be calibrated using the ice water method. The correct reading is:',
+ opts:['28°F','32°F ±2°F','40°F','38°F'],c:1,cat:'Equipment',diff:'easy',lvl:'E4',
+ explain:'Ice water calibration: 32°F ±2°F. If the thermometer reads outside this range, recalibrate or replace it. Uncalibrated thermometers make all HACCP temp checks unreliable.',
+ src:'NAVSUP P-486 · FDA Food Code'},
+
+// ── CULINARY ─────────────────────────────────────────────
+{q:'Which beef cut is the most tender?',
+ opts:['Chuck','Round','Tenderloin (Short Loin)','Brisket'],c:2,cat:'Culinary',diff:'easy',lvl:'E4',
+ explain:'The tenderloin (part of the short loin) is the most tender beef cut. The psoas major muscle does almost no work — minimal connective tissue = maximum tenderness.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+{q:'What are the Five Mother Sauces?',
+ opts:['Béchamel, Velouté, Espagnole, Tomato, Hollandaise',
+       'Béchamel, Alfredo, Brown Gravy, Tomato, Hollandaise',
+       'Cream, Velouté, Espagnole, Marinara, Butter',
+       'Roux, Velouté, Demi-glace, Tomato, Béarnaise'],c:0,cat:'Culinary',diff:'medium',lvl:'E4',
+ explain:'Five Mother Sauces: Béchamel (milk + white roux), Velouté (stock + blonde roux), Espagnole (brown stock + brown roux), Tomato, Hollandaise (butter + egg yolks + acid). All other sauces derive from these.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+{q:'Julienne is defined as:',
+ opts:['A 1/4 inch cube','Thin matchstick strips 1/8 × 1/8 × 2 inches',
+       'Thin ribbons of leafy greens','A 3/4 inch cube'],c:1,cat:'Culinary',diff:'easy',lvl:'E4',
+ explain:'Julienne = thin matchstick strips, 1/8 × 1/8 × 2 inches. Brunoise (1/8 inch cube) is made by cross-cutting julienne strips.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+{q:'To scale a recipe from 50 portions to 300 portions, the conversion factor is:',
+ opts:['3','5','6','250'],c:2,cat:'Culinary',diff:'easy',lvl:'E4',
+ explain:'Conversion factor = new yield ÷ old yield = 300 ÷ 50 = 6. Multiply every ingredient by 6.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+{q:'3 teaspoons equals:',
+ opts:['1 cup','1 fluid ounce','1 tablespoon','1 pint'],c:2,cat:'Culinary',diff:'easy',lvl:'E4',
+ explain:'3 teaspoons = 1 tablespoon. Volume chain: 3 tsp = 1 tbsp | 2 tbsp = 1 fl oz | 8 fl oz = 1 cup | 2 cups = 1 pint | 2 pints = 1 quart | 4 quarts = 1 gallon.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+{q:'A stock turns cloudy during production. This is most likely caused by:',
+ opts:['Too many vegetables added','Boiling instead of simmering',
+       'Not enough salt','Cooking too long at low temp'],c:1,cat:'Culinary',diff:'medium',lvl:'E4',
+ explain:'Boiling a stock permanently emulsifies fat and albumin (protein foam) into the liquid, making it cloudy and greasy. A cloudy stock cannot be fixed — prevention only. Always simmer, never boil.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+{q:'Mashed potatoes came out gluey. The most likely cause is:',
+ opts:['Not enough butter','Used russet potatoes',
+       'Used waxy potatoes or overworked the starch',
+       'Cooked too long on the stove'],c:2,cat:'Culinary',diff:'medium',lvl:'E5',
+ explain:'Gluey mashed potatoes result from using waxy potatoes (red, Yukon Gold) or over-mixing — which ruptures starch cells. Once gluey, it cannot be fixed. Use russet potatoes and fold gently.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+{q:'Which leavening agent requires an acid to activate?',
+ opts:['Yeast','Baking powder','Baking soda','Cream of tartar'],c:2,cat:'Culinary',diff:'easy',lvl:'E4',
+ explain:'Baking soda requires an acid (buttermilk, lemon juice, vinegar) to produce CO2 and leaven the product. Baking powder has its own acid built in and does not require an external acid source.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+{q:'Fried chicken came out soggy. The most likely cause is:',
+ opts:['Wrong breading used','Oil temperature too low or fryer overcrowded',
+       'Chicken marinated too long','Not enough salt in the breading'],c:1,cat:'Culinary',diff:'medium',lvl:'E5',
+ explain:'Soggy fried food = oil too cool (<350°F) or fryer overcrowded. Cool oil allows food to absorb oil before a crust forms. Fry at 350–375°F in small batches, pat food dry, drain on wire rack.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+{q:'Braising is the correct cooking method for which type of cut?',
+ opts:['Tender cuts like tenderloin',
+       'Tough cuts high in connective tissue like chuck or brisket',
+       'Thin fish fillets',
+       'All cuts equally'],c:1,cat:'Culinary',diff:'easy',lvl:'E4',
+ explain:'Braising uses long, slow, moist heat to convert collagen (connective tissue in tough cuts) to gelatin — creating tender, flavorful results from inexpensive cuts. Never braise a tender cut.',
+ src:'CS TRAMAN / NAVEDTRA'},
+
+// ── ROLES ─────────────────────────────────────────────────
+{q:'What is the watch captain responsible for before service opens?',
+ opts:['Ordering supplies for the next week',
+       'Verifying station assignments, food temps, logs, COMRATS list, and serving line setup',
+       'Filing the monthly NAVSUP 1291',
+       'Deep cleaning the galley spaces'],c:1,cat:'Roles',diff:'easy',lvl:'E4',
+ explain:'Before service opens, the watch captain verifies station assignments, cooking temps, hot/cold holding temps, HACCP logs, sanitizer concentration, serving line setup, COMRATS list, and food labels.',
+ src:'NAVSUP P-486'},
+
+{q:'The JOD issues items from the storeroom. What form must be completed?',
+ opts:['NAVSUP 335','NAVSUP 1090','NAVSUP 1149','No form required for routine issues'],c:2,cat:'Roles',diff:'easy',lvl:'E4',
+ explain:'NAVSUP 1149 must be completed for every storeroom issue. Both the issuer (JOD) and receiver sign. No exceptions — missing 1149s create inventory discrepancies.',
+ src:'NAVSUP P-486'},
+
+{q:'Multiple sailors report vomiting and diarrhea within 24 hours of eating in the GM. What is the FIRST action?',
+ opts:['Deep clean the galley immediately',
+       'Discard all remaining food from that meal',
+       'Report to FSO and medical immediately — preserve ALL food as evidence',
+       'Continue operations and monitor the situation'],c:2,cat:'Roles',diff:'hard',lvl:'E5',
+ explain:'Report immediately to FSO and ship\'s medical. Do NOT discard any food — it is evidence. Preserve all remaining food, pull all HACCP logs, and document everything served at that meal.',
+ src:'NAVSUP P-486 · NAVMED P-5010'},
+
+{q:'The galley is undermanned for dinner service. What is the correct response?',
+ opts:['Push through the full menu — the crew is counting on you',
+       'Cancel dinner service',
+       'Simplify the menu and notify the FSO immediately — never sacrifice food safety',
+       'Skip mid-rats to compensate for the extra effort at dinner'],c:2,cat:'Roles',diff:'medium',lvl:'E5',
+ explain:'Simplify the menu to match available staffing while maintaining all food safety standards. Notify FSO immediately. A tired, short-staffed crew cutting corners on food safety is more dangerous than a simple menu.',
+ src:'NAVSUP P-486'},
+
+// ── LEADERSHIP ────────────────────────────────────────────
+{q:'A CS3 has been verbally corrected twice for not labeling food. It happens again. What is the correct next step?',
+ opts:['Verbal correction again — give them another chance',
+       'Formal written counseling documenting the behavior and previous corrections',
+       'Ignore it — they will figure it out eventually',
+       'Immediately initiate separation proceedings'],c:1,cat:'Leadership',diff:'medium',lvl:'E6',
+ explain:'After two verbal corrections, the next step is formal written counseling. Document the specific behavior, dates of prior corrections, and the standard that was violated. Progressive discipline protects both you and the sailor.',
+ src:'MILPERSMAN'},
+
+{q:'How far in advance should a watchbill be posted?',
+ opts:['Day before','3 days out','2 weeks out','1 week out'],c:2,cat:'Leadership',diff:'easy',lvl:'E5',
+ explain:'Watchbills should be posted minimum 2 weeks in advance. Last-minute changes should be rare exceptions, not the norm. Consistent scheduling improves morale and planning.',
+ src:'MILPERSMAN · Navy Leadership Manual'},
+
+{q:'What is the most important thing a CS1 does to prevent inspection failures?',
+ opts:['Clean all spaces the week before an inspection',
+       'Coach sailors on what to say to inspectors',
+       'Enforce standards consistently every day — not just before inspections',
+       'Memorize the OPNAV 5040/1 checklist'],c:2,cat:'Leadership',diff:'medium',lvl:'E6',
+ explain:'Inspections are won over months, not the week before. Consistent daily enforcement of food safety, sanitation, and records standards is what creates a high-scoring inspection. Cleaning up for inspection signals to inspectors that standards are not routinely maintained.',
+ src:'NAVSUP P-486 · OPNAV 5040/1'},
+
+// ── WARDROOM ──────────────────────────────────────────────
+{q:'During wardroom service, food is served from which side?',
+ opts:['Right','Left','Either side','Above'],c:1,cat:'Wardroom',diff:'easy',lvl:'E4',
+ explain:'Food is always served from the LEFT. Beverages are poured from the RIGHT. Plates are removed from the RIGHT. This creates a predictable pattern and prevents reaching across guests.',
+ src:'Navy Social Usage & Protocol'},
+
+{q:'When should plates be removed during formal wardroom service?',
+ opts:['As soon as each individual guest finishes',
+       'When the majority of guests are done',
+       'Only after ALL guests at the table have finished',
+       'When the next course is ready to serve'],c:2,cat:'Wardroom',diff:'easy',lvl:'E4',
+ explain:'Never remove a plate until ALL guests at the table are finished. Removing early makes remaining guests feel rushed — a serious breach of formal service etiquette.',
+ src:'Navy Social Usage & Protocol'},
+
+]; // END QUIZ
+
+
+// data-checklists.js
+const CL = [
+  {title:'Opening Galley', emoji:'🌅', items:[
+    {t:'Check and log walk-in refrigerator temperature (must be ≤41°F)', c:true},
+    {t:'Check and log walk-in freezer temperature (must be ≤0°F)', c:true},
+    {t:'Calibrate all thermometers — ice water must read 32°F ±2°F'},
+    {t:'Test sanitizer concentration (chlorine 50–200 ppm)', c:true},
+    {t:'Stock handwash sink — soap and paper towels only'},
+    {t:'Check food handler sick status — exclude anyone symptomatic', c:true},
+    {t:'Inspect food handler appearance: hair restraint, clean uniform, no jewelry'},
+    {t:'Verify menu is posted for current meal'},
+    {t:'Confirm steam table is preheating before food is placed'},
+    {t:'Review prior HACCP logs for any uncorrected issues'},
+    {t:'Brief crew on menu, station assignments, and any special requirements'},
+    {t:'Pull storeroom items — complete NAVSUP 1149 before issue'},
+    {t:'Verify no expired items pulled from storeroom'},
+    {t:'Check COMRATS list — know who is NOT authorized to eat free', c:true},
+  ]},
+
+  {title:'Pre-Service (Watch Captain)', emoji:'🍽️', items:[
+    {t:'Verify hot holding temps ≥135°F at all steam table positions', c:true},
+    {t:'Verify cold holding temps ≤41°F at cold bar / salad line', c:true},
+    {t:'Log pre-service holding temperatures in HACCP log'},
+    {t:'All serving utensils in place and clean'},
+    {t:'Confirm correct portion tools for each item'},
+    {t:'Estimate headcount from OOD / duty log'},
+    {t:'Stage DD 1544 book if cash patrons expected'},
+    {t:'Confirm COMRATS list is current and accessible', c:true},
+    {t:'Verify all food on line is labeled — item, date, time', c:true},
+    {t:'Cooking temps logged for all items on serving line', c:true},
+    {t:'Serving line clean and organized'},
+    {t:'Walk entire galley — check cleanliness of all surfaces'},
+  ]},
+
+  {title:'Securing / Post-Meal', emoji:'🌙', items:[
+    {t:'Record final headcount on NAVSUP 1090 by correct category', c:true},
+    {t:'Reconcile DD 1544 coupons against cash collected', c:true},
+    {t:'Begin cooling leftovers IMMEDIATELY — ice bath or blast chiller', c:true},
+    {t:'Log cooling start time and temperature for every batch', c:true},
+    {t:'Verify 135°F to 70°F cooling within 2 hours', c:true},
+    {t:'Label all cooled leftovers — item, date, time'},
+    {t:'Clean and sanitize all food-contact surfaces'},
+    {t:'Change sanitizer buckets — log final concentration'},
+    {t:'Check and log walk-in refrigerator and freezer temperatures'},
+    {t:'Storeroom secured and locked'},
+    {t:'Complete NAVSUP 1090 and file'},
+    {t:'Deck mopped, drains cleared'},
+    {t:'All cooling items documented before turnover', c:true},
+  ]},
+
+  {title:'Watch Turnover', emoji:'🔄', items:[
+    {t:'Walk-in refrigerator temp current and logged'},
+    {t:'Walk-in freezer temp current and logged'},
+    {t:'Sanitizer concentration tested and in range'},
+    {t:'Any active cooling items — pass current temp, start time, and batch description', c:true},
+    {t:'NAVSUP 1090 current for all completed meals'},
+    {t:'DD 1544 reconciliation complete for completed meals'},
+    {t:'HACCP logs complete and current for all CCPs'},
+    {t:'Equipment status — any malfunctions or work orders'},
+    {t:'Storeroom locked'},
+    {t:'All issues passed to oncoming watch — verbally and in writing'},
+    {t:'Oncoming watch captain has COMRATS list and headcount estimate'},
+  ]},
+
+  {title:'Cook on Watch', emoji:'👨‍🍳', items:[
+    {t:'Review menu and production schedule before starting'},
+    {t:'Verify all recipe quantities using Pub 7 — do not estimate'},
+    {t:'Check thaw status of proteins — verify approved thawing method used', c:true},
+    {t:'Log cooking temperature for every protein batch before sending to line', c:true},
+    {t:'Maintain production area clean and sanitized during cooking'},
+    {t:'Replenish line before items run out — not after complaints'},
+    {t:'Notify watch captain of any substitutions needed'},
+    {t:'Use correct portion scoops and ladles for every item'},
+    {t:'Never reheat food in the steam table — use oven/stovetop/steam kettle', c:true},
+    {t:'Cool excess production immediately after service'},
+  ]},
+
+  {title:'JOD Daily', emoji:'📦', items:[
+    {t:'Check and log walk-in refrigerator temperature (≤41°F)'},
+    {t:'Check and log walk-in freezer temperature (≤0°F)'},
+    {t:'Inspect storeroom for pest evidence — droppings, gnaw marks, insects', c:true},
+    {t:'Check expiration dates during storeroom entry'},
+    {t:'Complete NAVSUP 1149 for every item issued — both parties sign', c:true},
+    {t:'Verify FIFO rotation on any new deliveries'},
+    {t:'Storeroom locked when not actively attended', c:true},
+    {t:'All food stored minimum 6 inches off deck'},
+    {t:'Raw proteins stored below ready-to-eat items', c:true},
+    {t:'Conduct spot inventory for any category showing variance'},
+  ]},
+
+  {title:'Records Keeper Daily', emoji:'📋', items:[
+    {t:'Complete NAVSUP 1090 for every meal period — no skipped entries', c:true},
+    {t:'Reconcile DD 1544 coupons vs cash after every meal', c:true},
+    {t:'Verify HACCP logs have no blank entries for any CCP', c:true},
+    {t:'Confirm headcount tallied by correct category on 1090'},
+    {t:'File all NAVSUP 335s and 1149s from the day'},
+    {t:'Verify cooling logs are complete with start time, temps, and batch IDs'},
+    {t:'Check inspection binder — all current logs filed and accessible'},
+    {t:'Flag any discrepancies to CS1 or watch captain immediately'},
+  ]},
+
+  {title:'Receiving Inspection', emoji:'🚚', items:[
+    {t:'Calibrate thermometer before starting receiving inspection'},
+    {t:'Check temperature of all cold TCS items (must be ≤41°F)', c:true},
+    {t:'Check frozen items — must be solid, no thaw evidence', c:true},
+    {t:'Count quantities against delivery invoice'},
+    {t:'Check expiration / use-by dates on all items'},
+    {t:'Inspect packaging — no tears, pest damage, or tampering'},
+    {t:'Check for dented seams on canned goods — reject if seam is dented', c:true},
+    {t:'Check for swollen cans — discard immediately', c:true},
+    {t:'Reject any out-of-temp or unacceptable items', c:true},
+    {t:'Sign NAVSUP 335 ONLY for accepted items', c:true},
+    {t:'Stow refrigerated and frozen items immediately — cold chain first'},
+    {t:'Complete NAVSUP 1149 for all items issued to the galley'},
+    {t:'Rotate stock per FIFO — new items to the back'},
+  ]},
+
+  {title:'Field Day', emoji:'🧹', items:[
+    {t:'Remove all food from surfaces before cleaning'},
+    {t:'Degrease all cooking surfaces — range tops, fryers, griddle'},
+    {t:'Clean grease filters per MCS schedule', c:true},
+    {t:'Deep clean inside ovens, convection ovens, and steamers'},
+    {t:'Pull equipment from bulkhead — clean behind and underneath'},
+    {t:'Scrub deck drains and grease traps'},
+    {t:'Clean and sanitize all walk-in shelving and interior surfaces'},
+    {t:'Inspect walk-in door seals and gaskets'},
+    {t:'Descale dishwasher and clean all filters'},
+    {t:'Clean behind and under dishwasher'},
+    {t:'Scrub all bulkheads and overhead surfaces'},
+    {t:'Inspect storeroom for pest evidence', c:true},
+    {t:'Clean dry storage shelving and inspect underneath'},
+    {t:'Document all completed tasks on MCS', c:true},
+    {t:'CS1 / FCPO sign-off on MCS', c:true},
+  ]},
+
+  {title:'Pre-Inspection Walkthrough', emoji:'🔎', items:[
+    {t:'All HACCP logs complete — no blank entries', c:true},
+    {t:'NAVSUP 1090s complete for all meal periods', c:true},
+    {t:'MCS posted and all tasks signed off as completed', c:true},
+    {t:'All food labeled — item, date, time', c:true},
+    {t:'No food stored on deck anywhere', c:true},
+    {t:'Walk-in temps correct and logged twice daily'},
+    {t:'Raw meat stored below ready-to-eat foods', c:true},
+    {t:'No expired items in storerooms or walk-ins', c:true},
+    {t:'Thermometers calibrated — calibration log current'},
+    {t:'Test strips available at every sanitizer station'},
+    {t:'No chemicals stored near food or food-contact surfaces', c:true},
+    {t:'COMRATS list current and accessible', c:true},
+    {t:'Food handler training records current for all personnel'},
+    {t:'Hood and grease filters clean'},
+    {t:'No pest evidence anywhere in food service spaces', c:true},
+    {t:'Handwash sinks stocked — soap and paper towels only'},
+    {t:'SDS sheets accessible for all chemicals in use'},
+    {t:'Equipment PMs current — MRC records available'},
+    {t:'Records retained and filed (minimum 3 years)'},
+    {t:'Crew briefed on how to answer inspector questions directly'},
+  ]},
+
+  {title:'Walk-In Checks', emoji:'🌡️', items:[
+    {t:'Record exact temperature of refrigerator (must be ≤41°F)', c:true},
+    {t:'Record exact temperature of freezer (must be ≤0°F)', c:true},
+    {t:'Check door seals and gaskets for wear or damage'},
+    {t:'Confirm FIFO rotation — older stock forward, newer stock back'},
+    {t:'Check expiration dates on items in walk-in'},
+    {t:'Verify raw proteins are stored below RTE foods', c:true},
+    {t:'Verify all items are labeled — item, date, time', c:true},
+    {t:'Check that no food is stored on the floor of the walk-in'},
+    {t:'Check cooling items — verify they are reaching target temps', c:true},
+    {t:'Inspect for pest evidence inside walk-in', c:true},
+    {t:'Confirm walk-in door is closing and sealing properly'},
+    {t:'Log all readings in HACCP temperature log'},
+  ]},
+
+  {title:'Scullery Checks', emoji:'🫧', items:[
+    {t:'Verify sanitizer concentration before starting (chlorine 50–200 ppm)', c:true},
+    {t:'Set up 3-compartment sink: wash, rinse, sanitize in correct order'},
+    {t:'Confirm clean-to-dirty flow — no crossing dirty items into clean zone', c:true},
+    {t:'Check high-temp dishwasher: final rinse must reach ≥180°F', c:true},
+    {t:'Check chemical sanitize dishwasher: correct sanitizer concentration'},
+    {t:'Air dry all items — never towel dry after sanitizing', c:true},
+    {t:'Test sanitizer every 4 hours or after heavy use'},
+    {t:'Change sanitizer solution every 2 hours or when visibly soiled'},
+    {t:'Keep scullery area clean and free of debris throughout service'},
+    {t:'Inspect for pest evidence in drains and behind equipment'},
+  ]},
+
+  {title:'Serving Line Setup', emoji:'🍛', items:[
+    {t:'Steam table preheated to operating temp before food is placed'},
+    {t:'Verify all hot items are at ≥135°F before opening line', c:true},
+    {t:'Verify all cold items are at ≤41°F before opening line', c:true},
+    {t:'Log pre-service temps in HACCP holding log', c:true},
+    {t:'All serving utensils in place — correct scoop/ladle for each item'},
+    {t:'All items on line labeled — item name visible to server'},
+    {t:'Sneeze guards in place'},
+    {t:'Line area clean and organized'},
+    {t:'DD 1544 book staged if cash patrons expected'},
+    {t:'Replenishment batches ready or in production'},
+    {t:'Watch captain conducted final walkthrough of line before opening'},
+  ]},
+]; // END CL
+
+
+// app.js
+
+// ─────────────────────────────────────────
+// SYNONYMS
+// ─────────────────────────────────────────
+const SYN = {
+  fridge:'refrigerator walk-in cold storage 41',
+  freezer:'frozen 0 walk-in freeze',
+  'food poisoning':'foodborne illness pathogen bacteria outbreak',
+  'cash meal':'DD 1544 coupon payment cash',
+  'chicken temp':'poultry 165 internal temperature cooking',
+  inventory:'storeroom FIFO 1149 receiving count',
+  inspection:'INSURV OPNAV 5040 TYCOM audit',
+  cleaning:'sanitizing MCS master cleaning schedule field day',
+  ordering:'DSCP 367 requisition NSN procurement',
+  leftovers:'cooling 135 70 41 blast chiller reheating',
+  sick:'illness exclude vomiting diarrhea hygiene',
+  fire:'grease fire emergency Class K suppression water',
+  thaw:'thawing defrost refrigerator running water room temperature',
+  ood:'officer of the deck duty watch',
+};
+
+function expandQ(q) {
+  let out = q.toLowerCase();
+  Object.keys(SYN).forEach(k => { if (out.includes(k)) out += ' ' + SYN[k]; });
+  return out;
+}
+function fuzzyMatch(text, q) {
+  const words = expandQ(q).split(/\s+/).filter(w => w.length > 1);
+  const t = (text || '').toLowerCase();
+  return words.some(w => t.includes(w));
+}
+function searchCard(item, q) {
+  if (!q) return true;
+  const haystack = [
+    item.title, item.quick, item.src,
+    (item.rules || []).join(' '),
+    (item.mistakes || []).join(' '),
+    (item.hits || []).join(' '),
+    (item.tags || []).join(' '),
+  ].join(' ');
+  return fuzzyMatch(haystack, q);
+}
+
+// ─────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────
+let activeCat = 'all', openCard = null, nightMode = false;
+let quizState = { mode:null, questions:[], idx:0, score:0, answered:false, catScores:{}, missed:[] };
+let clStates = {};
+
+function lsGet(k) { try { return JSON.parse(localStorage.getItem('csapp_' + k)); } catch(e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem('csapp_' + k, JSON.stringify(v)); } catch(e) {} }
+
+function loadPrefs() {
+  nightMode = lsGet('night') || false;
+  if (nightMode) { document.body.classList.add('dark'); document.getElementById('nightBtn').textContent = '☀️'; }
+  clStates = lsGet('checks') || {};
+  quizState.missed = lsGet('missed') || [];
+}
+
+// ─────────────────────────────────────────
+// TABS
+// ─────────────────────────────────────────
+function showTab(tab, btn) {
+  ['ref', 'cl', 'quiz'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (tab === 'cl') renderChecklists();
+  if (tab === 'quiz') renderQuizMenu();
+}
+
+function toggleNight() {
+  nightMode = !nightMode;
+  document.body.classList.toggle('dark', nightMode);
+  document.getElementById('nightBtn').textContent = nightMode ? '☀️' : '🌙';
+  lsSet('night', nightMode);
+}
+
+// ─────────────────────────────────────────
+// REFERENCE
+// ─────────────────────────────────────────
+function initChips() {
+  const wrap = document.getElementById('chips');
+  let h = '<span class="chip active" data-cat="all" onclick="setCat(\'all\')">All</span>';
+  CATS.forEach(c => {
+    h += `<span class="chip" data-cat="${c.id}" onclick="setCat('${c.id}')">${c.label}</span>`;
+  });
+  wrap.innerHTML = h;
+}
+
+function setCat(c) {
+  activeCat = c;
+  document.querySelectorAll('.chip').forEach(ch => ch.classList.toggle('active', ch.dataset.cat === c));
+  openCard = null;
+  doSearch();
+}
+
+function searchTag(t) {
+  document.getElementById('si').value = t;
+  openCard = null;
+  doSearch();
+}
+
+function toggleCard(id) {
+  openCard = openCard === id ? null : id;
+  doSearch();
+}
+
+function hl(text, q) {
+  if (!q || !text) return text || '';
+  const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  return String(text).replace(re, '<mark>$1</mark>');
+}
+
+function doSearch() {
+  const q = (document.getElementById('si').value || '').trim();
+  const res = REF.filter(item => {
+    if (activeCat !== 'all' && item.cat !== activeCat) return false;
+    return searchCard(item, q);
+  });
+
+  const rc = document.getElementById('rcount');
+  rc.textContent = res.length + ' result' + (res.length !== 1 ? 's' : '') + ' — tap any card to expand';
+
+  const cont = document.getElementById('results');
+  if (!res.length) {
+    cont.innerHTML = '<div class="empty">No results' + (q ? ' for "' + q + '"' : '') +
+      '<br><span style="font-size:12px;color:var(--text3)">Try: cooling, 1090, COMRATS, fryer, MCS, thawing...</span></div>';
+    return;
+  }
+
+  cont.innerHTML = res.map((item, i) => {
+    const id = item.cat + i;
+    const isOpen = openCard === id;
+    const ci = CAT_MAP[item.cat] || { label: item.cat, badge: 'b-pub' };
+
+    let detail = '';
+    if (isOpen) {
+      let body = item.safety ? '<span class="safety-tag">⚠ SAFETY CRITICAL</span><br><br>' : '';
+
+      if (item.rules && item.rules.length) {
+        body += '<h4>Key Rules</h4><ul>' + item.rules.map(r => `<li>${hl(r, q)}</li>`).join('') + '</ul>';
+      }
+      if (item.mistakes && item.mistakes.length) {
+        body += '<h4>Common Mistakes</h4><ul>' + item.mistakes.map(m => `<li>${hl(m, q)}</li>`).join('') + '</ul>';
+      }
+      if (item.hits && item.hits.length) {
+        body += '<h4>Inspection Hits</h4><ul>' + item.hits.map(h2 => `<li>${hl(h2, q)}</li>`).join('') + '</ul>';
+      }
+      if (item.src) {
+        body += '<div class="src-box">📚 ' + item.src + '</div>';
+      }
+      if (item.tags && item.tags.length) {
+        body += '<div class="tags">' + item.tags.map(t2 =>
+          `<span class="tag" onclick="searchTag('${t2.replace(/'/g, "\\'")}');event.stopPropagation()">${t2}</span>`
+        ).join('') + '</div>';
+      }
+      detail = '<div class="card-detail">' + body + '</div>';
+    }
+
+    return `<div class="card${isOpen ? ' open' : ''}${item.safety ? ' safety' : ''}" onclick="toggleCard('${id}')">
+      <div class="card-inner">
+        <span class="cat-badge ${ci.badge}">${ci.label}</span>
+        <div class="card-body">
+          <div class="card-title">${hl(item.title, q)}</div>
+          ${item.quick ? `<div class="quick-ans">⚡ ${hl(item.quick, q)}</div>` : ''}
+          ${!isOpen ? `<div class="card-preview">${hl((item.rules && item.rules[0]) || '', q)}</div>` : ''}
+          ${detail}
+        </div>
+        <span class="card-arrow">${isOpen ? '▲' : '▼'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────
+// CHECKLISTS
+// ─────────────────────────────────────────
+function renderChecklists() {
+  const wrap = document.getElementById('clWrap');
+  wrap.innerHTML = CL.map((cl, ci) => {
+    const st = clStates[ci] || {};
+    const done = Object.values(st).filter(Boolean).length;
+    const total = cl.items.length;
+    const items = cl.items.map((item, ii) => {
+      const checked = st[ii] || false;
+      return `<div class="ci-row" onclick="toggleCheck(${ci},${ii})">
+        <div class="chkbox${checked ? ' done' : ''}"></div>
+        <div class="ci-txt${checked ? ' done' : ''}">${item.t}${item.c ? '<span class="crit-tag">★ CRITICAL</span>' : ''}</div>
+      </div>`;
+    }).join('');
+    return `<div class="cl-card">
+      <div class="cl-hdr" onclick="toggleCL(${ci})">
+        <div>
+          <div class="cl-title">${cl.emoji} ${cl.title}</div>
+          <div class="cl-meta">${done}/${total} complete ${done === total ? '✅' : done > 0 ? '🔄' : ''}</div>
+        </div>
+        <span style="color:var(--text3);font-size:12px">▼</span>
+      </div>
+      <div class="cl-body${ci === 0 ? ' open' : ''}" id="cl-${ci}">
+        ${items}
+        <div class="cl-actions">
+          <button class="cl-btn" onclick="resetCL(${ci});event.stopPropagation()">↺ Reset</button>
+          <button class="cl-btn" onclick="printCL(${ci});event.stopPropagation()">🖨 Print</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCL(ci) { document.getElementById('cl-' + ci).classList.toggle('open'); }
+
+function toggleCheck(ci, ii) {
+  if (!clStates[ci]) clStates[ci] = {};
+  clStates[ci][ii] = !clStates[ci][ii];
+  lsSet('checks', clStates);
+  renderChecklists();
+  document.getElementById('cl-' + ci).classList.add('open');
+}
+
+function resetCL(ci) {
+  clStates[ci] = {};
+  lsSet('checks', clStates);
+  renderChecklists();
+  document.getElementById('cl-' + ci).classList.add('open');
+}
+
+function printCL(ci) {
+  const cl = CL[ci];
+  const w = window.open('', '_blank');
+  w.document.write(`<html><body style="font-family:sans-serif;padding:20px;max-width:600px">
+    <h2>${cl.emoji} ${cl.title}</h2>
+    <p style="color:#666;margin-bottom:16px;font-size:12px">Navy CS Reference</p>
+    ${cl.items.map(item => `<div style="display:flex;gap:10px;padding:6px 0;border-bottom:1px solid #eee;align-items:flex-start">
+      <div style="width:20px;height:20px;border:2px solid #333;border-radius:3px;flex-shrink:0;margin-top:1px"></div>
+      <div style="font-size:13px">${item.t}${item.c ? ' <strong>★</strong>' : ''}</div>
+    </div>`).join('')}
+  </body></html>`);
+  w.print();
+}
+
+// ─────────────────────────────────────────
+// QUIZ
+// ─────────────────────────────────────────
+const QUIZ_MODES = [
+  { id: 'q10',    icon: '⚡', label: 'Quick 10',     desc: '10 random questions' },
+  { id: 'full',   icon: '📋', label: 'Full Mixed',   desc: 'All questions shuffled' },
+  { id: 'E4',     icon: '🎯', label: 'E4 Prep',      desc: 'E4 level only' },
+  { id: 'E5',     icon: '🎯', label: 'E5 Prep',      desc: 'E4 + E5 questions' },
+  { id: 'E6',     icon: '🎯', label: 'E6 Prep',      desc: 'E4–E6 questions' },
+  { id: 'fs',     icon: '🌡️', label: 'Food Safety',  desc: 'HACCP & safety' },
+  { id: 'forms',  icon: '📄', label: 'Forms',        desc: 'Records & accountability' },
+  { id: 'insp',   icon: '🔎', label: 'Inspection',   desc: 'Inspection questions' },
+  { id: 'missed', icon: '❌', label: 'Missed Q\'s',  desc: 'Review wrong answers' },
+];
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function getPool(mode) {
+  const missed = lsGet('missed') || [];
+  if (mode === 'q10')   return shuffle(QUIZ).slice(0, 10);
+  if (mode === 'full')  return shuffle(QUIZ);
+  if (mode === 'E4')    return shuffle(QUIZ.filter(q => q.lvl === 'E4'));
+  if (mode === 'E5')    return shuffle(QUIZ.filter(q => ['E4','E5'].includes(q.lvl)));
+  if (mode === 'E6')    return shuffle(QUIZ.filter(q => ['E4','E5','E6'].includes(q.lvl)));
+  if (mode === 'fs')    return shuffle(QUIZ.filter(q => q.cat === 'Food Safety'));
+  if (mode === 'forms') return shuffle(QUIZ.filter(q => q.cat === 'Forms'));
+  if (mode === 'insp')  return shuffle(QUIZ.filter(q => q.cat === 'Inspection'));
+  if (mode === 'missed') {
+    const pool = QUIZ.filter(q => missed.includes(q.q));
+    return pool.length ? shuffle(pool) : shuffle(QUIZ).slice(0, 10);
+  }
+  return shuffle(QUIZ);
+}
+
+function renderQuizMenu() {
+  const missed = lsGet('missed') || [];
+  const last = lsGet('lastScore');
+  const qw = document.getElementById('quizWrap');
+  qw.innerHTML = `
+    <div class="quiz-title">⭐ Quiz</div>
+    <div class="quiz-sub">${QUIZ.length} questions · Scenario + knowledge + inspection
+      ${last ? '<br>Last score: ' + last.score + '/' + last.total : ''}</div>
+    <div class="mode-grid">
+      ${QUIZ_MODES.map(m => `<button class="mode-btn" onclick="startQuiz('${m.id}')">
+        <span class="mode-icon">${m.icon}</span>
+        <strong>${m.label}</strong><br>
+        <span style="font-size:10px;color:var(--text3)">${m.desc}</span>
+      </button>`).join('')}
+    </div>
+    <div class="missed-info">${missed.length} missed question${missed.length !== 1 ? 's' : ''} saved
+      ${missed.length ? '<button class="cl-btn" style="margin-left:8px" onclick="clearMissed()">Clear</button>' : ''}
+    </div>`;
+}
+
+function startQuiz(mode) {
+  const questions = getPool(mode);
+  if (!questions.length) { alert('No questions for this mode.'); return; }
+  quizState = { mode, questions, idx: 0, score: 0, answered: false, catScores: {}, missed: lsGet('missed') || [] };
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const { questions, idx, score, answered } = quizState;
+  if (idx >= questions.length) { renderScore(); return; }
+  const q = questions[idx];
+  const pct = Math.round((idx / questions.length) * 100);
+  const diffCls = { easy: 'diff-easy', medium: 'diff-medium', hard: 'diff-hard' }[q.diff] || 'diff-easy';
+  const qw = document.getElementById('quizWrap');
+  qw.innerHTML = `<div class="qcard">
+    <div class="qprog">Q${idx + 1} of ${questions.length} &nbsp;·&nbsp; Score: ${score}/${idx}</div>
+    <div class="qbar"><div class="qfill" style="width:${pct}%"></div></div>
+    <div class="qmeta">
+      <span class="qbadge ${diffCls}">${q.diff.toUpperCase()}</span>
+      <span class="qbadge qlvl">${q.lvl}</span>
+      <span class="qbadge qcat-badge">${q.cat}</span>
+    </div>
+    <div class="qq">${q.q}</div>
+    <div class="qopts">${q.opts.map((opt, i) =>
+      `<button class="qopt" id="qo${i}" onclick="answerQ(${i})" ${answered ? 'disabled' : ''}>${opt}</button>`
+    ).join('')}</div>
+    ${answered ? `<div class="qexpl">
+      <div class="qexpl-hd">${quizState.lastCorrect ? '✅ Correct!' : '❌ Incorrect'}</div>
+      ${q.explain}
+      <div class="qsrc">📚 ${q.src}</div>
+    </div>
+    <button class="qnext" onclick="nextQ()">${idx + 1 < questions.length ? 'Next Question →' : 'See Results'}</button>` : ''}
+  </div>`;
+
+  if (answered) {
+    q.opts.forEach((_, i) => {
+      const btn = document.getElementById('qo' + i);
+      if (!btn) return;
+      if (i === q.c) btn.classList.add('correct');
+      else if (i === quizState.lastAnswer && i !== q.c) btn.classList.add('wrong');
+    });
+  }
+}
+
+function answerQ(selected) {
+  if (quizState.answered) return;
+  const q = quizState.questions[quizState.idx];
+  const correct = selected === q.c;
+  quizState.answered = true;
+  quizState.lastCorrect = correct;
+  quizState.lastAnswer = selected;
+  if (correct) {
+    quizState.score++;
+  } else {
+    if (!quizState.missed.includes(q.q)) quizState.missed.push(q.q);
+    lsSet('missed', quizState.missed);
+  }
+  if (!quizState.catScores[q.cat]) quizState.catScores[q.cat] = { r: 0, t: 0 };
+  quizState.catScores[q.cat].t++;
+  if (correct) quizState.catScores[q.cat].r++;
+  renderQuestion();
+}
+
+function nextQ() {
+  quizState.idx++;
+  quizState.answered = false;
+  renderQuestion();
+}
+
+function renderScore() {
+  const { score, questions, catScores, missed, mode } = quizState;
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  lsSet('lastScore', { score, total });
+  const msg = pct >= 90 ? 'Outstanding — advancement ready. 🌟' :
+    pct >= 75 ? 'Good work. Review weak areas and drill again.' :
+    pct >= 60 ? 'Decent start. Study the reference cards then quiz again.' :
+    'Keep at it. Daily reference + quiz = advancement.';
+  const cats = Object.entries(catScores).map(([c, { r, t }]) => {
+    const p = Math.round((r / t) * 100);
+    const cls = p >= 80 ? 'pct-g' : p >= 60 ? 'pct-o' : 'pct-b';
+    return `<div class="cat-row"><span>${c}</span><span class="${cls}">${r}/${t} (${p}%)</span></div>`;
+  }).join('');
+  const sorted = Object.entries(catScores).sort(([, a], [, b]) => (a.r / a.t) - (b.r / b.t));
+  const weak = sorted[0];
+  const strong = sorted[sorted.length - 1];
+  document.getElementById('quizWrap').innerHTML = `<div class="score-wrap">
+    <div style="font-size:40px">⚓</div>
+    <div class="score-num">${pct}%</div>
+    <div class="score-lbl">${score} correct out of ${total}</div>
+    <div class="score-msg">${msg}</div>
+    ${strong ? `<div style="font-size:12px;color:var(--green);margin-top:8px">✅ Strongest: ${strong[0]}</div>` : ''}
+    ${weak ? `<div style="font-size:12px;color:var(--red);margin-top:4px">⚠️ Weakest: ${weak[0]} — review those cards</div>` : ''}
+    <div class="cat-bd">
+      <div class="cat-bd-title">Category Breakdown</div>
+      ${cats}
+    </div>
+    <div class="score-btns">
+      <button class="sbtn primary" onclick="renderQuizMenu()">Back</button>
+      <button class="sbtn" onclick="startQuiz('${mode}')">Retry</button>
+      ${missed.length ? `<button class="sbtn" onclick="startQuiz('missed')">Missed (${missed.length})</button>` : ''}
+    </div>
+  </div>`;
+}
+
+function clearMissed() {
+  quizState.missed = [];
+  lsSet('missed', []);
+  renderQuizMenu();
+}
+
+// ─────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────
+function init() {
+  loadPrefs();
+  initChips();
+  doSearch();
+}
+document.readyState === 'loading'
+  ? document.addEventListener('DOMContentLoaded', init)
+  : init();
+
+</script>
+</body>
+</html>
